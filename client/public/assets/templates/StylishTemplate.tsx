@@ -355,10 +355,10 @@ const StylishTemplate: React.FC<StylishTemplateProps> = ({ data, accentColor, on
         {/* Header with Name */}
         <header className="mb-8 pb-4" style={{ borderBottom: `3px solid #333` }}>
           <h1 className="text-5xl font-bold mb-2 uppercase tracking-wide text-gray-900">
-            {data.personal_info?.full_name?.split(' ')[0] || "SHIMRA"}
+            {data.personal_info?.full_name?.split(' ')[0] || "First Name"}
           </h1>
           <h1 className="text-5xl font-bold mb-3 uppercase tracking-wide text-gray-900">
-            {data.personal_info?.full_name?.split(' ').slice(1).join(' ') || "NAAZ"}
+            {data.personal_info?.full_name?.split(' ').slice(1).join(' ') || "Last Name"}
           </h1>
           <h2 className="text-lg text-gray-800">
             {data.personal_info?.title || "Fullstack developer"}
