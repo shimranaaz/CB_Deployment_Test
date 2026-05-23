@@ -208,7 +208,7 @@ const scoreLabel = (s: number) => s >= 70 ? 'Excellent' : s >= 60 ? 'Good' : s >
 type AdminSection = 'profile' | 'dashboard' | 'billing' | 'delete-account';
 
 
-const SimpleProfile: React.FC<{ user: UserType; onLogout: () => void }> = ({ user, onLogout }) => {
+const SimpleProfile: React.FC<{ user: UserType; onLogout: () => void; onConfirmLogout: () => void }> = ({ user, onConfirmLogout }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 const isAdmin = user?.role === 'admin';
@@ -572,10 +572,10 @@ const sidebarLinks: { key: AdminSection; label: string; isExternal?: boolean }[]
         <p style={{ fontSize:13, color:'#6b7280', margin:0, lineHeight:1.6 }}>You will be redirected to the login page.</p>
       </div>
       <div style={{ display:'flex', gap:9 }}>
-        <button onClick={onLogout}
-          style={{ flex:1, padding:'12px', borderRadius:12, fontSize:13, fontWeight:700, background:BRAND, color:SAND, border:'none', cursor:'pointer' }}>
-          Yes, Logout
-        </button>
+    <button onClick={onConfirmLogout}   // ← was: onClick={onLogout}
+  style={{ flex:1, padding:'12px', borderRadius:12, fontSize:13, fontWeight:700, background:BRAND, color:SAND, border:'none', cursor:'pointer' }}>
+  Yes, Logout
+</button>
         <button onClick={() => setShowLogoutModal(false)}
           style={{ flex:1, padding:'12px', borderRadius:12, fontSize:13, fontWeight:700, background:'#e5e7eb', color:'#374151', border:'none', cursor:'pointer' }}>
           Cancel
@@ -821,9 +821,9 @@ const confirmLogout = () => {
   };
 
 // ── Admin / Sales guard ───────────────────────────────────────────────────────
-  if (user?.role === 'admin' || user?.role === 'sales') {
-    return <SimpleProfile user={user as UserType} onLogout={handleLogout} />;
-  }
+if (user?.role === 'admin' || user?.role === 'sales') {
+  return <SimpleProfile user={user as UserType} onLogout={handleLogout} onConfirmLogout={confirmLogout} />;
+}
 
   // ─────────────────────────────────────────────────────────────────────────────
   // SIDEBAR
