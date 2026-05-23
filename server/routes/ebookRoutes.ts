@@ -1,0 +1,32 @@
+import express from "express";
+import {
+  getAllEbooks,
+  getAllEbooksAdmin,
+  createEbook,
+  updateEbook,
+  deleteEbook,
+  toggleEbookStatus,
+} from "../controllers/ebookController.js";
+import protect from "../middlewares/authMiddleware.js";
+import adminOnly from "../middlewares/adminMiddleware.js";
+
+const ebookRouter = express.Router();
+ebookRouter.get("/", getAllEbooks);
+
+ebookRouter.get("/admin/all", protect, adminOnly, getAllEbooksAdmin);
+
+
+ebookRouter.post("/", protect, adminOnly, createEbook);
+
+
+ebookRouter.put("/:ebookId", protect, adminOnly, updateEbook);
+
+
+ebookRouter.delete("/:ebookId", protect, adminOnly, deleteEbook);
+
+
+ebookRouter.patch("/:ebookId/toggle", protect, adminOnly, toggleEbookStatus);
+
+console.log("✅ Ebook routes registered successfully");
+
+export default ebookRouter;

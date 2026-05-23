@@ -1,0 +1,34 @@
+/* Desktop nav links */
+.nav-link {
+  position: relative;
+  font-weight: 300;
+  color: white;
+  padding-bottom: 4px;
+  transition: color 0.3s ease;
+}
+.nav-link.active {
+  font-weight: 600;
+}
+
+/* Hidden underline by default */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 25px;
+  height: 2px;
+  background-color: #EDC9AF;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Hover underline --- visible */
+.nav-link:hover::after {
+  opacity: 1;
+}
+
+/* Active link underline always visible */
+.nav-link.active::after {
+  opacity: 1;
+}

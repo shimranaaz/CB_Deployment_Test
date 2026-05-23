@@ -1,0 +1,4 @@
+input:focus {
+  --tw-ring-color: #2c2a63 !important;
+  border-color: #2c2a63 !important;
+}

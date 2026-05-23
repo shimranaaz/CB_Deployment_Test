@@ -1,0 +1,15 @@
+# Env
+.env
+
+# Node
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Uploads
+uploads/
+
+# OS
+.DS_Store

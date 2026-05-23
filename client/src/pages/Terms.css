@@ -1,0 +1,16 @@
+/* Terms.css */
+
+.Terms-content p {
+  color: #333;
+}
+
+.Terms-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+.Terms-content li{
+    color: #333;
+}
+.Terms-content ul li::marker {
+  color: rgb(29, 185, 84) !important;
+}
