@@ -182,17 +182,18 @@ const templateMeta: Record<string, { description: string; users: number }> = {
   "codepro-resume": { description: "Code-clean two-column resume for software professionals.", users: 33500 },
 };
 
-const navItems: { key: string; label: string; icon: string; adminOnly?: boolean }[] = [
-  { key: 'home',             label: 'Home',            icon: 'fa-solid fa-house'                        },
-  { key: 'my-resumes',       label: 'My Resume',       icon: 'fa-solid fa-file-lines'                   },
-  { key: 'my-cover-letters', label: 'My Cover Letters',icon: 'fa-solid fa-envelope'                     },
-  { key: 'resume-templates', label: 'Resume Template', icon: 'fa-solid fa-layer-group'                  },
-  { key: 'ats-score',        label: 'ATS Score',       icon: 'fa-solid fa-chart-bar'                    },
-  { key: 'linkedin-score',   label: 'LinkedIn Score',  icon: 'fa-brands fa-linkedin'                    },
-  { key: 'ebooks',           label: 'E-Books',         icon: 'fa-solid fa-book-open',   adminOnly: true },
-  { key: 'profile',          label: 'My Profile',      icon: 'fa-solid fa-user'                         },
-  { key: 'settings',         label: 'Settings',        icon: 'fa-solid fa-gear'                         },
+const navItems = [
+  { key: 'home',             label: 'Home',            icon: 'fa-solid fa-house'      },
+  { key: 'my-resumes',       label: 'My Resume',       icon: 'fa-solid fa-file-lines' },
+  { key: 'my-cover-letters', label: 'My Cover Letters',icon: 'fa-solid fa-envelope'   },
+  { key: 'resume-templates', label: 'Resume Template', icon: 'fa-solid fa-layer-group'},
+  { key: 'ats-score',        label: 'ATS Score',       icon: 'fa-solid fa-chart-bar'  },
+  { key: 'linkedin-score',   label: 'LinkedIn Score',  icon: 'fa-brands fa-linkedin'  },
+  { key: 'ebooks',           label: 'E-Books',         icon: 'fa-solid fa-book-open'  },
+  { key: 'profile',          label: 'My Profile',      icon: 'fa-solid fa-user'       }, // ← ADD THIS
+  { key: 'settings',         label: 'Settings',        icon: 'fa-solid fa-gear'       },
 ];
+
 const isPaidPlan  = (p: string) => ['Trial','Basic','Advanced','Professional'].includes(p);
 const getUpgradeAdPlan = (p: string) => {
   if (p === 'Free' || p === 'Trial')  return { name: 'Basic',        price: 399, desc: 'Unlock 1 premium resume download + all templates for 1 month' };
@@ -207,7 +208,7 @@ const scoreLabel = (s: number) => s >= 70 ? 'Excellent' : s >= 60 ? 'Good' : s >
 type AdminSection = 'profile' | 'dashboard' | 'billing' | 'delete-account';
 
 
-const SimpleProfile: React.FC<{ user: UserType; onLogout: () => void; onConfirmLogout: () => void }> = ({ user, onConfirmLogout }) => {
+const SimpleProfile: React.FC<{ user: UserType; onLogout: () => void }> = ({ user, onLogout }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 const isAdmin = user?.role === 'admin';
@@ -571,10 +572,10 @@ const sidebarLinks: { key: AdminSection; label: string; isExternal?: boolean }[]
         <p style={{ fontSize:13, color:'#6b7280', margin:0, lineHeight:1.6 }}>You will be redirected to the login page.</p>
       </div>
       <div style={{ display:'flex', gap:9 }}>
-    <button onClick={onConfirmLogout}   // ← was: onClick={onLogout}
-  style={{ flex:1, padding:'12px', borderRadius:12, fontSize:13, fontWeight:700, background:BRAND, color:SAND, border:'none', cursor:'pointer' }}>
-  Yes, Logout
-</button>
+        <button onClick={onLogout}
+          style={{ flex:1, padding:'12px', borderRadius:12, fontSize:13, fontWeight:700, background:BRAND, color:SAND, border:'none', cursor:'pointer' }}>
+          Yes, Logout
+        </button>
         <button onClick={() => setShowLogoutModal(false)}
           style={{ flex:1, padding:'12px', borderRadius:12, fontSize:13, fontWeight:700, background:'#e5e7eb', color:'#374151', border:'none', cursor:'pointer' }}>
           Cancel
@@ -661,19 +662,17 @@ const [showCreateCoverLetterModal,  setShowCreateCoverLetterModal]  = useState(f
   const [deletingAccount, setDeletingAccount] = useState(false);
 
   // ── Bootstrap ────────────────────────────────────────────────────────────────
- useEffect(() => {
+  useEffect(() => {
     if (!document.getElementById('fa-cdn')) {
       const l = document.createElement('link');
       l.id = 'fa-cdn'; l.rel = 'stylesheet';
       l.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css';
       document.head.appendChild(l);
     }
-    if (user?.role === 'admin' || user?.role === 'sales') return;
     loadAll();
   }, []);
 
-useEffect(() => {
-    if (user?.role !== 'admin') return;
+  useEffect(() => {
     if (activeSection === 'ebooks' && ebooks.length === 0) loadEbooks();
   }, [activeSection]);
 
@@ -822,8 +821,8 @@ const confirmLogout = () => {
   };
 
 // ── Admin / Sales guard ───────────────────────────────────────────────────────
-if (user?.role === 'admin' || user?.role === 'sales') {
-  return <SimpleProfile user={user as UserType} onLogout={handleLogout} onConfirmLogout={confirmLogout} />;
+ if (user?.role === 'admin' || user?.role === 'sales') {
+  return <SimpleProfile user={user as UserType} onLogout={confirmLogout} />;
 }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -846,7 +845,7 @@ if (user?.role === 'admin' || user?.role === 'sales') {
 
       {/* Nav */}
       <nav style={{ flex:1, padding:'8px 0', overflowY:'auto', minHeight:0 }}>
-      {navItems.filter((item: { key: string; label: string; icon: string; adminOnly?: boolean }) => !item.adminOnly || user?.role === 'admin').map(({ key, label, icon }) => {
+        {navItems.map(({ key, label, icon }) => {
           const active = activeSection === key;
           return (
             <button key={key} onClick={() => nav(key)}
