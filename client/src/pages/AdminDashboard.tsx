@@ -18,7 +18,6 @@ interface Stats {
   activeCoupons: number;
   totalLinkedInSubmissions: number;
 }
-
 interface User {
   _id: string;
   name: string;
@@ -27,8 +26,8 @@ interface User {
   plan: string;
   role: string;
   createdAt: string;
+  atsScore?: number | null;
 }
-
 interface Payment {
   _id: string;
   userId: {
@@ -126,7 +125,8 @@ const AdminDashboard: React.FC = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+const [searchQuery, setSearchQuery] = useState('');
+  const [resumeSearchQuery, setResumeSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -255,7 +255,7 @@ else if (activeTab === 'ebooks') {
   loadEbooks();
 }
 
-  }, [activeTab, currentPage, searchQuery, atsSearch, linkedinSearch]);
+}, [activeTab, currentPage, searchQuery, resumeSearchQuery, atsSearch, linkedinSearch]);
 
   const loadFailedPayments = async () => {
     setLoading(true);
@@ -550,11 +550,11 @@ const checkAdminAccess = async () => {
   };
 
 
-  const loadResumes = async () => {
+const loadResumes = async () => {
     setLoading(true);
     try {
       const { data } = await api.get('/admin/resumes', {
-        params: { page: currentPage, limit: 10 }
+        params: { page: currentPage, limit: 10, search: resumeSearchQuery }
       });
       setResumes(data.resumes);
       setTotalPages(data.pagination.pages);
@@ -925,8 +925,8 @@ else if (deleteTarget.type === 'ebook') {
               <span className="font-medium">LinkedIn Checker</span>
             </button>
 
-            <button
-              onClick={() => { setActiveTab('resumes'); setCurrentPage(1); setSidebarOpen(false); }}
+        <button
+              onClick={() => { setActiveTab('resumes'); setCurrentPage(1); setResumeSearchQuery(''); setSidebarOpen(false); }}
               className={`w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-colors text-sm sm:text-base ${activeTab === 'resumes'
                 ? 'bg-[#EDC9AF] text-[#2c2a63]'
                 : 'text-white hover:bg-white/10'
@@ -1233,8 +1233,9 @@ else if (deleteTarget.type === 'ebook') {
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mobile</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ATS Score</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
@@ -1255,6 +1256,25 @@ else if (deleteTarget.type === 'ebook') {
                             <Phone size={14} className="text-gray-400" />
                             <span>{user.mobile || 'N/A'}</span>
                           </div>
+                        </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                          {user.atsScore != null ? (
+                            <span
+                              className="inline-flex px-2.5 py-1 text-xs font-bold rounded-full"
+                              style={{
+                                backgroundColor:
+                                  user.atsScore >= 75 ? '#d1fae5' :
+                                  user.atsScore >= 50 ? '#fef3c7' : '#fee2e2',
+                                color:
+                                  user.atsScore >= 75 ? '#065f46' :
+                                  user.atsScore >= 50 ? '#92400e' : '#991b1b',
+                              }}
+                            >
+                              {user.atsScore} / 100
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-400">No score</span>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {user.role === 'admin' ? (
@@ -1891,8 +1911,20 @@ else if (deleteTarget.type === 'ebook') {
           )}
 
 
-          {activeTab === 'resumes' && (
+         {activeTab === 'resumes' && (
             <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-3 sm:p-4 border-b border-gray-200">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                  <input
+                    type="text"
+             placeholder="Search resumes by title, user name or email..."
+                    value={resumeSearchQuery}
+                    onChange={(e) => { setResumeSearchQuery(e.target.value); setCurrentPage(1); }}
+                    className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
+                  />
+                </div>
+              </div>
               {/* Mobile Card View */}
               <div className="block lg:hidden divide-y divide-gray-200">
                 {resumes.map((resume) => {

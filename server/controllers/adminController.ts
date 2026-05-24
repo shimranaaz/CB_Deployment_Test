@@ -92,17 +92,29 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
       }
       : baseQuery;
 
-    const users = await User.find(query)
+ const users = await User.find(query)
       .select("-password -otp")
       .sort({ createdAt: -1 })
       .limit(Number(limit))
       .skip((Number(page) - 1) * Number(limit));
 
+    // Attach latest ATS score for each user
+    const usersWithATS = await Promise.all(
+      users.map(async (user: any) => {
+        const userObj = user.toObject();
+        const latestATS = await ATS.findOne({ email: userObj.email })
+          .sort({ createdAt: -1 })
+          .select('atsScore');
+        userObj.atsScore = latestATS?.atsScore ?? null;
+        return userObj;
+      })
+    );
+
     const total = await User.countDocuments(query);
 
-    res.status(200).json({
+res.status(200).json({
       success: true,
-      users,
+      users: usersWithATS,
       pagination: {
         page: Number(page),
         limit: Number(limit),
@@ -201,9 +213,32 @@ export const getFailedPayments = async (req: Request, res: Response): Promise<vo
 
 export const getAllResumes = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 20, search = "" } = req.query;
 
-    const resumes = await Resume.find()
+    let query: any = {};
+
+    if (search && (search as string).trim()) {
+      const searchTerm = (search as string).trim();
+
+      const matchingUsers = await User.find({
+        isDeleted: { $ne: true },
+        $or: [
+          { name: { $regex: searchTerm, $options: "i" } },
+          { email: { $regex: searchTerm, $options: "i" } },
+        ],
+      }).select("_id");
+
+      const userIds = matchingUsers.map((u) => u._id);
+
+      query = {
+        $or: [
+          { title: { $regex: searchTerm, $options: "i" } },
+          { userId: { $in: userIds } },
+        ],
+      };
+    }
+
+    const resumes = await Resume.find(query)
       .populate({ path: "userId", select: "name email mobile isDeleted" })
       .sort({ updatedAt: -1 })
       .limit(Number(limit))
@@ -222,7 +257,7 @@ export const getAllResumes = async (req: Request, res: Response): Promise<void> 
       return resumeObj;
     });
 
-    const total = await Resume.countDocuments();
+    const total = await Resume.countDocuments(query);
 
     res.status(200).json({
       success: true,

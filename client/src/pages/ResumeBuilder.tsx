@@ -943,7 +943,7 @@ const ResumeBuilder: React.FC = () => {
     return false;
   };
 
-  const downloadResume = async (): Promise<void> => {
+ const downloadResume = async (): Promise<void> => {
     try {
       if (!checkResumeHasContent()) {
         toast.error('Please fill in your resume details before downloading', { duration: 4000 });
@@ -951,6 +951,15 @@ const ResumeBuilder: React.FC = () => {
       }
       const errors = validatePersonalInfo();
       if (errors.length > 0) { showValidationErrors(); return; }
+
+      // Admin and sales users bypass all paywalls — download any template directly
+      const isPrivilegedUser = userRole === 'admin' || userRole === 'sales';
+      if (isPrivilegedUser) {
+        setIsDownloading(true);
+        isDownloadingRef.current = true;
+        await performDownloadInternal();
+        return;
+      }
 
       const isFreeTemplate = freeTemplates.includes(resumeData.template || '');
 
