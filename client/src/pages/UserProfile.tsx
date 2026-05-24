@@ -268,7 +268,7 @@ const isAdmin = user?.role === 'admin';
 
 const handleDashboardNav = () => {
     if (user?.role === 'admin') {
-      navigate('/admin');
+      navigate('/admin/dashboard');
     } else if (user?.role === 'sales') {
       navigate('/sales/ats-checker');
     }
