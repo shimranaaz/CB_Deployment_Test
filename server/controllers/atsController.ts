@@ -6,6 +6,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import ATS from '../models/ATS.js';
+import User from '../models/User.js';
 import { analyzeResume } from '../utils/atsAnalyzer.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -222,8 +223,14 @@ export const uploadAndAnalyzeResume = async (req: Request, res: Response) => {
       feedback: feedback
     });
 
-    await atsSubmission.save();
-    console.log('✅ Saved to database with ID:', atsSubmission._id);
+await atsSubmission.save();
+console.log('✅ Saved to database with ID:', atsSubmission._id);
+
+const userId = (req as any).userId;
+if (userId) {
+  await User.findByIdAndUpdate(userId, { $set: { atsScore: analysis.overallScore } });
+  console.log('✅ ATS score saved to user:', analysis.overallScore);
+}
     console.log('📁 File saved at:', resumePath);
     console.log('📊 Score category:', scoreCategory);
 

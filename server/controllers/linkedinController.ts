@@ -275,12 +275,13 @@ try {
       profileFixData: analysisData.profileFixData,
     });
 
-    if (req.userId) {
-      await User.findByIdAndUpdate(req.userId, {
-        $inc: { linkedinOptimizationCount: 1 },
-      });
-      console.log(`📊 LinkedIn analysis count incremented for user ${req.userId}`);
-    }
+  if (req.userId) {
+  await User.findByIdAndUpdate(req.userId, {
+    $set: { linkedinScore: analysisData.overallScore },
+    $inc: { linkedinOptimizationCount: 1 },
+  });
+  console.log(`📊 LinkedIn score ${analysisData.overallScore} + count incremented for user ${req.userId}`);
+}
 
     console.log('✅ LinkedIn analysis complete:', {
       overallScore: analysisData.overallScore,

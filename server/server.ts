@@ -28,11 +28,6 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT: number = parseInt(process.env.PORT || "5000", 10);
 
-// Silence logs in production to save memory
-if (process.env.NODE_ENV === 'production') {
-  console.log = () => {};
-  console.info = () => {};
-}
 
 // Database connection
 await connectDB();

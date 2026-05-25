@@ -11,7 +11,8 @@ import {
   verifyOTP,
   resetPassword,
   resendOTP,
-  sendContactMessage, 
+  sendContactMessage,
+  updateScores,
 } from "../controllers/userController";
 
 import protect from "../middlewares/authMiddleware.js";
@@ -39,6 +40,7 @@ userRouter.get("/resumes", protect, getUserResumes);
 userRouter.put("/update-profile", protect, updateProfile);
 userRouter.put("/change-password", protect, changePassword);
 userRouter.delete("/delete-account", protect, deleteAccount);
+userRouter.put("/update-scores", protect, updateScores);
 
 console.log("✅ User routes registered successfully");
 
