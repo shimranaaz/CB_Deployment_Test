@@ -102,10 +102,16 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
     const usersWithATS = await Promise.all(
       users.map(async (user: any) => {
         const userObj = user.toObject();
-        const latestATS = await ATS.findOne({ email: userObj.email })
-          .sort({ createdAt: -1 })
-          .select('atsScore');
-        userObj.atsScore = latestATS?.atsScore ?? null;
+       // First check if score is saved directly on user document (new fix)
+if (userObj.atsScore != null) {
+  // already has score from User model, keep it
+} else {
+  // Fallback: try matching by email in ATS collection (old behavior)
+  const latestATS = await ATS.findOne({ email: userObj.email })
+    .sort({ createdAt: -1 })
+    .select('atsScore');
+  userObj.atsScore = latestATS?.atsScore ?? null;
+}
         return userObj;
       })
     );
