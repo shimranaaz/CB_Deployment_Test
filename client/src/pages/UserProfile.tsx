@@ -268,7 +268,7 @@ const SimpleProfile: React.FC<{ user: UserType; onLogout: () => void }> = ({ use
 
   const handleDashboardNav = () => {
     if (user?.role === 'admin') {
-      navigate('/admin');
+      navigate('/admin/dashboard');
     } else if (user?.role === 'sales') {
       navigate('/sales/ats-checker');
     }
