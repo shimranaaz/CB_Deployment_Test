@@ -139,18 +139,56 @@ const afterScore = 85;
       perMonth: '₹83/month',
     },
   ];
-
-  const features = [
-    { icon: 'fa-file-arrow-down', title: 'Download in PDF & Word', desc: 'High-quality PDF and editable Word file' },
-    { icon: 'fa-robot', title: 'AI Resume Enhancer', desc: 'Advanced AI rewrite & content improvement' },
-    { icon: 'fa-layer-group', title: '50+ Premium Templates', desc: 'Access our recruiter-approved templates' },
-    { icon: 'fa-bullseye', title: 'Live ATS Score Tracking', desc: 'Track and improve your ATS score in real-time' },
-    { icon: 'fa-linkedin', title: 'LinkedIn Profile Review', desc: 'Detailed LinkedIn optimization guide' },
-    { icon: 'fa-book-open', title: 'Interview Guide eBook', desc: '100+ interview Q&A and expert tips' },
-    { icon: 'fa-headset', title: 'Priority Support', desc: 'Get expert help whenever you need' },
-    { icon: 'fa-infinity', title: 'One Time Payment', desc: 'Lifetime access, no recurring charges' },
+ const features = [
+    {
+      bg: '#ede9fe',
+      title: 'Download in PDF & Word',
+      desc: 'High-quality PDF and editable Word file',
+      svg: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v13" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round"/><path d="M8 12l4 4 4-4" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round"/></svg>
+    },
+    {
+      bg: '#fff7ed',
+      title: 'AI Resume Enhancer',
+      desc: 'Advanced AI rewrite & content improvement',
+      svg: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    },
+    {
+      bg: '#dcfce7',
+      title: '50+ Premium Templates',
+      desc: 'Access our recruiter-approved templates',
+      svg: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="2" width="16" height="20" rx="2" stroke="#16a34a" strokeWidth="2"/><line x1="8" y1="7" x2="16" y2="7" stroke="#16a34a" strokeWidth="2" strokeLinecap="round"/><line x1="8" y1="11" x2="16" y2="11" stroke="#16a34a" strokeWidth="2" strokeLinecap="round"/><line x1="8" y1="15" x2="13" y2="15" stroke="#16a34a" strokeWidth="2" strokeLinecap="round"/></svg>
+    },
+    {
+      bg: '#ede9fe',
+      title: 'Live ATS Score Tracking',
+      desc: 'Track and improve your ATS score in real-time',
+      svg: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#7c3aed" strokeWidth="2"/><circle cx="12" cy="12" r="5" stroke="#7c3aed" strokeWidth="2"/><circle cx="12" cy="12" r="2" fill="#7c3aed"/></svg>
+    },
+    {
+      bg: '#dbeafe',
+      title: 'LinkedIn Profile Review',
+      desc: 'Detailed LinkedIn optimization guide',
+      svg: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="3" stroke="#0a66c2" strokeWidth="2"/><path d="M7 10v7M7 7v.01" stroke="#0a66c2" strokeWidth="2.2" strokeLinecap="round"/><path d="M11 17v-4a2 2 0 014 0v4M11 13v4" stroke="#0a66c2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    },
+    {
+      bg: '#dbeafe',
+      title: 'Interview Guide eBook',
+      desc: '100+ interview Q&A and expert tips',
+      svg: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round"/><line x1="9" y1="7" x2="15" y2="7" stroke="#1d4ed8" strokeWidth="1.8" strokeLinecap="round"/><line x1="9" y1="11" x2="15" y2="11" stroke="#1d4ed8" strokeWidth="1.8" strokeLinecap="round"/></svg>
+    },
+    {
+      bg: '#fff7ed',
+      title: 'Priority Support',
+      desc: 'Get expert help whenever you need',
+      svg: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 18v-6a9 9 0 0118 0v6" stroke="#ea580c" strokeWidth="2" strokeLinecap="round"/><rect x="16" y="14" width="5" height="6" rx="2" stroke="#ea580c" strokeWidth="2"/><rect x="3" y="14" width="5" height="6" rx="2" stroke="#ea580c" strokeWidth="2"/></svg>
+    },
+    {
+      bg: '#ffe4e6',
+      title: 'One Time Payment',
+      desc: 'Lifetime access, no recurring charges',
+      svg: <svg width="22" height="14" viewBox="0 0 30 18" fill="none"><path d="M15 9C13 5.5 10 3 6.5 3a6 6 0 000 12C10 15 13 12.5 15 9z" stroke="#e11d48" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M15 9c2 3.5 5 6 8.5 6a6 6 0 000-12C20 3 17 5.5 15 9z" stroke="#e11d48" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    },
   ];
-
   const beforeColor = beforeScore >= 70 ? '#10b981' : beforeScore >= 50 ? '#f59e0b' : '#ef4444';
   const selectedPlanData = plans.find(p => p.key === selectedPlan) ?? plans[1];
 
@@ -274,17 +312,20 @@ const afterScore = 85;
                   What You Get with Premium
                   <i className="fa-solid fa-crown text-yellow-500 text-sm" />
                 </h3>
-                <div className="grid grid-cols-2 gap-2.5">
+        
+          <div className="grid grid-cols-2 gap-2.5">
                   {features.map((f) => (
                     <div
                       key={f.title}
                       className="flex items-start gap-2.5 p-3 rounded-xl"
-                      style={{ backgroundColor: '#f8f7ff', border: '1px solid #ede9ff' }}
+                      style={{ backgroundColor: '#fff', border: '1px solid #f0f0f0' }}
                     >
-                      <i
-                        className={`fa-solid ${f.icon} text-sm mt-0.5 flex-shrink-0`}
-                        style={{ color: '#2c2a63', width: '16px' }}
-                      />
+                      <div
+                        className="flex items-center justify-center flex-shrink-0 rounded-lg mt-0.5"
+                        style={{ width: 40, height: 40, backgroundColor: f.bg, minWidth: 40 }}
+                      >
+                        {f.svg}
+                      </div>
                       <div>
                         <p className="text-[11px] font-bold leading-tight" style={{ color: '#2c2a63' }}>
                           {f.title}
