@@ -275,7 +275,7 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-
+ 
   const [allResumes, setAllResumes] = useState<Resume[]>([]);
   const [showCreateResume, setShowCreateResume] = useState<boolean>(false);
   const [showUploadResume, setShowUploadResume] = useState<boolean>(false);
@@ -362,7 +362,7 @@ const Dashboard: React.FC = () => {
         }
       }
 
-      const { data } = await api.post<CreateResumeResponse>('/resumes/create', { title });
+  const { data } = await api.post<CreateResumeResponse>('/resumes/create', { title, template: 'geometric-blue' });
       setAllResumes([...allResumes, data.resume]);
       setTitle('');
       setShowCreateResume(false);
@@ -938,7 +938,7 @@ const Dashboard: React.FC = () => {
                 <FontAwesomeIcon icon={faQuoteRight} className="ml-2 text-xl" style={{ color: '#2c2a63' }} />
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {allCoverLetters.map((coverLetter) => {
+             {allCoverLetters.map((coverLetter) => {
                   const dots = categoryDots["Simple"] ?? ["#9E9E9E", "#BDBDBD", "#E0E0E0"];
 
                   return (

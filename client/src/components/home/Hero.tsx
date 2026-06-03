@@ -387,6 +387,107 @@ const Hero = () => {
 
           </div>
         </div>
+
+{/* WHAT YOU GET WITH PREMIUM SECTION */}
+<div className="relative mt-16 mb-8">
+  <div className="flex flex-col items-center mb-8">
+    <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-center" style={{ color: "rgb(44, 42, 99)" }}>
+      What You Get with Premium
+    </h2>
+    <p className="text-xs sm:text-sm md:text-base text-center mt-2" style={{ color: "#555" }}>
+      Everything you need to land your dream job
+    </p>
+  </div>
+
+  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
+
+    {/* Card 1 */}
+    <div className="bg-white rounded-2xl p-4 sm:p-5 flex flex-col gap-2 hover:scale-[1.02] transition-transform duration-200"
+      style={{ boxShadow: "0 8px 30px rgba(44,42,99,0.13), 0 2px 8px rgba(44,42,99,0.07)" }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: "#ede9fe" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 3v13" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" />
+          <path d="M8 12l4 4 4-4" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </div>
+      <p className="text-sm sm:text-base font-bold leading-tight" style={{ color: "#2c2a63" }}>Download in PDF & Word</p>
+      <p className="text-xs sm:text-sm" style={{ color: "#888" }}>High-quality PDF and editable Word file</p>
+    </div>
+
+    {/* Card 2 */}
+    <div className="bg-white rounded-2xl p-4 sm:p-5 flex flex-col gap-2 hover:scale-[1.02] transition-transform duration-200"
+      style={{ boxShadow: "0 8px 30px rgba(44,42,99,0.13), 0 2px 8px rgba(44,42,99,0.07)" }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: "#dcfce7" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <rect x="4" y="2" width="16" height="20" rx="2" stroke="#16a34a" strokeWidth="2" />
+          <line x1="8" y1="7" x2="16" y2="7" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" />
+          <line x1="8" y1="11" x2="16" y2="11" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" />
+          <line x1="8" y1="15" x2="13" y2="15" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </div>
+      <p className="text-sm sm:text-base font-bold leading-tight" style={{ color: "#2c2a63" }}>50+ Premium Templates</p>
+      <p className="text-xs sm:text-sm" style={{ color: "#888" }}>Access our recruiter-approved templates</p>
+    </div>
+
+    {/* Card 3 */}
+    <div className="bg-white rounded-2xl p-4 sm:p-5 flex flex-col gap-2 hover:scale-[1.02] transition-transform duration-200"
+      style={{ boxShadow: "0 8px 30px rgba(44,42,99,0.13), 0 2px 8px rgba(44,42,99,0.07)" }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: "#fff7ed" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <p className="text-sm sm:text-base font-bold leading-tight" style={{ color: "#2c2a63" }}>AI Resume Enhancer</p>
+      <p className="text-xs sm:text-sm" style={{ color: "#888" }}>Advanced AI rewrite & content improvement</p>
+    </div>
+
+    {/* Card 4 */}
+    <div className="bg-white rounded-2xl p-4 sm:p-5 flex flex-col gap-2 hover:scale-[1.02] transition-transform duration-200"
+      style={{ boxShadow: "0 8px 30px rgba(44,42,99,0.13), 0 2px 8px rgba(44,42,99,0.07)" }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: "#ede9fe" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="#7c3aed" strokeWidth="2" />
+          <circle cx="12" cy="12" r="5" stroke="#7c3aed" strokeWidth="2" />
+          <circle cx="12" cy="12" r="2" fill="#7c3aed" />
+        </svg>
+      </div>
+      <p className="text-sm sm:text-base font-bold leading-tight" style={{ color: "#2c2a63" }}>Live ATS Score Tracking</p>
+      <p className="text-xs sm:text-sm" style={{ color: "#888" }}>Track and improve your ATS score in real-time</p>
+    </div>
+
+    {/* Card 5 */}
+    <div className="bg-white rounded-2xl p-4 sm:p-5 flex flex-col gap-2 hover:scale-[1.02] transition-transform duration-200"
+      style={{ boxShadow: "0 8px 30px rgba(44,42,99,0.13), 0 2px 8px rgba(44,42,99,0.07)" }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: "#dbeafe" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="15" width="20" height="5" rx="1.5" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" />
+          <rect x="2" y="9.5" width="20" height="5" rx="1.5" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" />
+          <rect x="2" y="4" width="20" height="5" rx="1.5" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </div>
+      <p className="text-sm sm:text-base font-bold leading-tight" style={{ color: "#2c2a63" }}>One Resume, Multiple Outputs</p>
+      <p className="text-xs sm:text-sm" style={{ color: "#888" }}>One resume, multiple ATS-optimized versions</p>
+    </div>
+
+    {/* Card 6 */}
+    <div className="bg-white rounded-2xl p-4 sm:p-5 flex flex-col gap-2 hover:scale-[1.02] transition-transform duration-200"
+      style={{ boxShadow: "0 8px 30px rgba(44,42,99,0.13), 0 2px 8px rgba(44,42,99,0.07)" }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: "#dbeafe" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="2" width="20" height="20" rx="3" stroke="#0a66c2" strokeWidth="2" />
+          <path d="M7 10v7M7 7v.01" stroke="#0a66c2" strokeWidth="2.2" strokeLinecap="round" />
+          <path d="M11 17v-4a2 2 0 014 0v4M11 13v4" stroke="#0a66c2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <p className="text-sm sm:text-base font-bold leading-tight" style={{ color: "#2c2a63" }}>LinkedIn Profile Review</p>
+      <p className="text-xs sm:text-sm" style={{ color: "#888" }}>Detailed LinkedIn optimization guide</p>
+    </div>
+
+  </div>
+</div>
+
       </div>
 
 

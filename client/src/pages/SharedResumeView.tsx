@@ -24,7 +24,7 @@ const SharedResumeView: React.FC = () => {
 
   useEffect(() => {
     const handlePrintAttempt = (): boolean => {
-      const currentTemplate = resumeDataRef.current?.template || 'digital-pro';
+      const currentTemplate = resumeDataRef.current?.template || 'geometric-blue';
       const isFreeTemplate = FREE_TEMPLATES.includes(currentTemplate);
 
       if (isFreeTemplate) {
@@ -172,8 +172,8 @@ const SharedResumeView: React.FC = () => {
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <ResumePreview
             data={resumeData}
-            template={resumeData.template || 'digital-pro'}
-            accentColor={resumeData.accent_color || '#3B82F6'}
+            template={resumeData.template || 'geometric-blue'}
+            accentColor={resumeData.accent_color || '#2c2a63'}
           />
         </div>
       </div>

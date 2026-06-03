@@ -82,9 +82,9 @@ export const getUserById = async (req: CustomRequest, res: Response) => {
     if (!userId) {
       return res.status(400).json({ message: "User ID missing" });
     }
-    const user = await User.findById(userId).select(
-      'name email mobile role plan planExpiresAt planRenewable unlockedTemplates downloadCount downloadLimit lastDownloadReset personalInfoLocked personalInfoEditCount firstDownloadedResumeId linkedinOptimizationCount linkedinPaid atsScore linkedinScore createdAt updatedAt'
-    );
+const user = await User.findById(userId).select(
+'name email mobile role plan planExpiresAt planRenewable unlockedTemplates downloadCount downloadLimit lastDownloadReset personalInfoLocked personalInfoEditCount firstDownloadedResumeId linkedinOptimizationCount linkedinPaid atsScore linkedinScore jdEnhancementCount jdEnhancementLimit resumeUploadCount resumeUploadLimit createdAt updatedAt'
+);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -111,15 +111,15 @@ export const getUserResumes = async (req: CustomRequest, res: Response) => {
       return res.status(400).json({ message: "Invalid user ID format" });
     }
 
-    const resumes = await Resume.find({
-      userId: new mongoose.Types.ObjectId(userId),
-      $or: [
-        { adminCreated: { $ne: true } },
-        { adminCreated: true, status: 'published' }
-      ]
-    })
-      .select('title template updatedAt createdAt status adminCreated adminUploadedPdf personal_info professional_summary skills experience education projects additional_info accent_color public hasBeenDownloaded')
-      .sort({ updatedAt: -1 });
+const resumes = await Resume.find({
+  userId: new mongoose.Types.ObjectId(userId),
+  $or: [
+    { adminCreated: { $ne: true } },           // user-created resumes always show
+    { adminCreated: true, status: 'published' } // admin-created only when published
+  ]
+})
+.select('title template updatedAt createdAt status adminCreated adminUploadedPdf personal_info professional_summary skills experience education projects additional_info accent_color public hasBeenDownloaded')
+.sort({ updatedAt: -1 });
 
 
     console.log("✅ Matched resumes:", resumes.length);
@@ -899,7 +899,7 @@ export const sendPaymentSuccessEmail = async (
 };
 
 export const updateScores = async (
-  req: CustomRequest,
+  req: CustomRequest,  // ← was: req: Request
   res: Response
 ): Promise<Response> => {
   try {
@@ -909,6 +909,8 @@ export const updateScores = async (
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
+
+    // Build update object — only update fields that are sent
     const updateFields: Record<string, number> = {};
 
     if (atsScore !== undefined && !isNaN(Number(atsScore))) {

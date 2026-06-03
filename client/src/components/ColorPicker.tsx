@@ -10,9 +10,15 @@ interface ColorPickerProps {
   selectedColor: string;
   onChange: (color: string) => void;
   onClose?: () => void;
+  inline?: boolean;
 }
 
-const ColorPicker: React.FC<ColorPickerProps> = ({ selectedColor, onChange, onClose }) => {
+const ColorPicker: React.FC<ColorPickerProps> = ({
+  selectedColor,
+  onChange,
+  onClose,
+  inline = false,
+}) => {
   const colors: Color[] = [
     { name: "Blue", value: "#3B82F6" },
     { name: "Indigo", value: "#6366F1" },
@@ -30,12 +36,47 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ selectedColor, onChange, onCl
 
   const handleColorClick = (colorValue: string) => {
     onChange(colorValue);
-    if (onClose) onClose();
+    if (!inline && onClose) onClose();
   };
 
+  // ── Inline mode (static sidebar) ────────────────────────────────────────
+  if (inline) {
+    return (
+      <div className="flex flex-col">
+        <p className="text-xs text-gray-500 mb-4">Choose an accent color for your resume</p>
+        <div className="grid grid-cols-3 gap-4">
+          {colors.map((color) => (
+            <div
+              key={color.value}
+              className="relative cursor-pointer flex flex-col items-center group"
+              onClick={() => handleColorClick(color.value)}
+            >
+              <div
+                className="w-14 h-14 rounded-full border-4 transition-all shadow-sm group-hover:shadow-md group-hover:scale-105"
+                style={{
+                  backgroundColor: color.value,
+                  borderColor: selectedColor === color.value ? '#2c2a63' : 'transparent',
+                  outline: selectedColor === color.value ? '2px solid #EDC9AF' : 'none',
+                }}
+              />
+              {selectedColor === color.value && (
+                <div className="absolute top-0 left-0 right-0 bottom-[20px] flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center shadow">
+                    <Check className="w-4 h-4 text-[#2c2a63]" strokeWidth={3} />
+                  </div>
+                </div>
+              )}
+              <p className="text-[10px] text-center mt-2 font-medium text-gray-600">{color.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Modal/overlay mode (original) ──────────────────────────────────────
   return (
     <div className="h-full flex flex-col bg-white">
-      {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 bg-white sticky top-0 z-10">
         <h2 className="text-lg font-semibold text-gray-900">Accent Colors</h2>
         {onClose && (
@@ -44,19 +85,17 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ selectedColor, onChange, onCl
           </button>
         )}
       </div>
-
-      {/* Color Grid */}
       <div className="flex-1 px-6 py-6 overflow-y-auto">
         <div className="grid grid-cols-3 gap-6">
           {colors.map((color) => (
-            <div 
-              key={color.value} 
-              className="relative cursor-pointer group flex flex-col items-center" 
+            <div
+              key={color.value}
+              className="relative cursor-pointer group flex flex-col items-center"
               onClick={() => handleColorClick(color.value)}
             >
-              <div 
-                className="w-20 h-20 rounded-full border-2 transition-all shadow-sm hover:shadow-md" 
-                style={{ 
+              <div
+                className="w-20 h-20 rounded-full border-2 transition-all shadow-sm hover:shadow-md"
+                style={{
                   backgroundColor: color.value,
                   borderColor: selectedColor === color.value ? '#2c2a63' : 'transparent'
                 }}

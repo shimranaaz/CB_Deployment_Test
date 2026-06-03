@@ -102,16 +102,10 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
     const usersWithATS = await Promise.all(
       users.map(async (user: any) => {
         const userObj = user.toObject();
-       // First check if score is saved directly on user document (new fix)
-if (userObj.atsScore != null) {
-  // already has score from User model, keep it
-} else {
-  // Fallback: try matching by email in ATS collection (old behavior)
-  const latestATS = await ATS.findOne({ email: userObj.email })
-    .sort({ createdAt: -1 })
-    .select('atsScore');
-  userObj.atsScore = latestATS?.atsScore ?? null;
-}
+        const latestATS = await ATS.findOne({ email: userObj.email })
+          .sort({ createdAt: -1 })
+          .select('atsScore');
+        userObj.atsScore = latestATS?.atsScore ?? null;
         return userObj;
       })
     );
@@ -666,7 +660,7 @@ CRITICAL: Return ONLY the JSON object. No markdown. No backticks. No explanation
     const resume = await Resume.create({
       userId,
       title: title || `${user.name}'s Resume`,
-      template: template || 'digital-pro',
+      template: template || 'geometric-blue',
       professional_summary: parsedResumeData.professional_summary || '',
       skills: parsedResumeData.skills || [],
       personal_info: parsedResumeData.personal_info || {

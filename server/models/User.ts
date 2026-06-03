@@ -21,8 +21,15 @@ export interface IUser extends Document {
   firstDownloadedResumeId?: mongoose.Types.ObjectId;
 
   linkedinOptimizationCount: number;
-  linkedinPaid: boolean;
+linkedinPaid: boolean;
 
+jdEnhancementCount: number;
+jdEnhancementLimit: number;
+
+resumeUploadCount: number;
+resumeUploadLimit: number;
+
+  // ✅ NEW: Score fields
   atsScore?: number | null;
   linkedinScore?: number | null;
 
@@ -73,17 +80,23 @@ const UserSchema: Schema<IUser> = new Schema(
       ref: "Resume",
       default: null,
     },
+linkedinOptimizationCount: { type: Number, default: 0 },
+linkedinPaid: { type: Boolean, default: false },
 
-    linkedinOptimizationCount: { type: Number, default: 0 },
-    linkedinPaid: { type: Boolean, default: false },
+jdEnhancementCount: { type: Number, default: 0 },
+jdEnhancementLimit: { type: Number, default: 1 },
 
+resumeUploadCount: { type: Number, default: 0 },
+resumeUploadLimit: { type: Number, default: 9999 },
+
+    // ✅ NEW: Score fields
     atsScore: { type: Number, default: null },
     linkedinScore: { type: Number, default: null },
   },
   { timestamps: true }
 );
 
-
+// ── Methods ──────────────────────────────────────────────────────────────────
 
 UserSchema.methods.hasDownloadsRemaining = function (): boolean {
   if (this.plan === "Free") return true;
@@ -115,6 +128,7 @@ UserSchema.methods.canUseLinkedInOptimization = function (): boolean {
   return ["Basic", "Advanced", "Professional"].includes(this.plan);
 };
 
+// ── Pre-save hooks ────────────────────────────────────────────────────────────
 
 UserSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
@@ -127,22 +141,32 @@ UserSchema.pre<IUser>("save", async function (next) {
   if (this.isModified("plan")) {
     const oldLimit = this.downloadLimit;
 
-    switch (this.plan) {
-      case "Trial":
-        this.downloadLimit = 1;
-        break;
-      case "Basic":
-        this.downloadLimit = 1;
-        break;
-      case "Advanced":
-        this.downloadLimit = 3;
-        break;
-      case "Professional":
-        this.downloadLimit = 5;
-        break;
-      default:
-        this.downloadLimit = 0;
-    }
+   switch (this.plan) {
+  case "Trial":
+  this.downloadLimit = 1;
+  this.jdEnhancementLimit = 0;
+  this.resumeUploadLimit = 1;
+  break;
+case "Basic":
+  this.downloadLimit = 5;
+  this.jdEnhancementLimit = 5;
+  this.resumeUploadLimit = 2;
+  break;
+case "Advanced":
+  this.downloadLimit = 10;
+  this.jdEnhancementLimit = 10;
+  this.resumeUploadLimit = 3;
+  break;
+case "Professional":
+  this.downloadLimit = 15;
+  this.jdEnhancementLimit = 15;
+  this.resumeUploadLimit = 5;
+  break;
+default:
+  this.downloadLimit = 0;       
+  this.jdEnhancementLimit = 1;   
+  this.resumeUploadLimit = 9999; 
+   }
 
     if (oldLimit !== this.downloadLimit && this.downloadLimit > 0) {
       this.downloadCount = 0;
@@ -151,6 +175,8 @@ UserSchema.pre<IUser>("save", async function (next) {
       this.personalInfoLocked = false;
       this.firstDownloadedResumeId = null;
       this.linkedinOptimizationCount = 0;
+this.jdEnhancementCount = 0;
+this.resumeUploadCount = 0;
 
       try {
         const Resume = mongoose.model("Resume");
@@ -172,7 +198,7 @@ UserSchema.pre<IUser>("save", async function (next) {
   next();
 });
 
-
+// ── Indexes ───────────────────────────────────────────────────────────────────
 
 UserSchema.index({ role: 1 });
 UserSchema.index({ mobile: 1 });

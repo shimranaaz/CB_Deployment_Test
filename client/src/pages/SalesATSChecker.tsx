@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, FileText, ChevronLeft, ChevronRight, Home, Menu, X, LayoutDashboard, Phone, Eye, Search, UploadCloud } from 'lucide-react';
 import api from '../configs/api';
@@ -68,6 +68,24 @@ interface ATSSubmission {
   createdAt: string;
 }
 
+const jobDescriptionSamples = [
+  { id: 'full-stack-developer', title: 'Full Stack Developer', category: 'Technology', description: `We are seeking a Full Stack Developer with strong expertise in designing, developing, and maintaining scalable web applications.\n\nSkills & Keywords:\nJavaScript, TypeScript, React, Angular, Node.js, Java, Python, REST API, GraphQL, SQL, NoSQL, MongoDB, PostgreSQL, MySQL, Microservices, Cloud (AWS/Azure/GCP), CI/CD, Docker, Git, Agile, SDLC` },
+  { id: 'react-developer', title: 'React Developer', category: 'Technology', description: `We are looking for a React Developer responsible for building high-performance, responsive user interfaces using React.js.\n\nSkills & Keywords:\nReact.js, JavaScript (ES6+), TypeScript, Redux, Context API, HTML5, CSS3, Tailwind, Material UI, REST APIs, Webpack, Vite, Git, Agile, Jest, Frontend Optimization` },
+  { id: 'python-developer', title: 'Python Developer', category: 'Technology', description: `We are seeking a Python Developer to build robust backend systems, automation scripts, and data-driven applications.\n\nSkills & Keywords:\nPython, Django, Flask, FastAPI, REST APIs, Microservices, SQL, PostgreSQL, MySQL, MongoDB, Data Structures, Algorithms, AWS, Docker, CI/CD, Unit Testing, Agile` },
+  { id: 'java-developer', title: 'Java Developer', category: 'Technology', description: `We are hiring a Java Developer to design and develop enterprise-grade applications.\n\nSkills & Keywords:\nJava, Spring Boot, Spring MVC, Hibernate, JPA, RESTful APIs, Microservices, SQL, Oracle, MySQL, Kafka, Docker, Kubernetes, AWS, CI/CD, Agile, SDLC` },
+  { id: 'nodejs-developer', title: 'Node.js Developer', category: 'Technology', description: `We are looking for a Node.js Developer to build scalable server-side applications and APIs.\n\nSkills & Keywords:\nNode.js, Express.js, JavaScript, TypeScript, REST APIs, GraphQL, MongoDB, PostgreSQL, Redis, Microservices, JWT, OAuth, AWS, Docker, CI/CD, Agile` },
+  { id: 'data-scientist', title: 'Data Scientist', category: 'Data & AI', description: `We are seeking a Data Scientist to analyze large datasets, build predictive models, and deliver actionable business insights.\n\nSkills & Keywords:\nPython, R, SQL, Machine Learning, Statistical Analysis, Data Visualization, Pandas, NumPy, Scikit-learn, TensorFlow, Power BI, Tableau, Big Data, AWS, Data Mining` },
+  { id: 'devops-engineer', title: 'DevOps Engineer', category: 'Infrastructure', description: `We are seeking a DevOps Engineer to automate infrastructure, CI/CD pipelines, and deployment processes.\n\nSkills & Keywords:\nDevOps, CI/CD, Jenkins, GitHub Actions, Docker, Kubernetes, Terraform, AWS, Azure, Linux, Monitoring, Cloud Security, Automation, Agile` },
+  { id: 'ui-ux-designer', title: 'UI/UX Designer', category: 'Design', description: `We are seeking a UI/UX Designer to create intuitive, user-centric digital experiences.\n\nSkills & Keywords:\nUI/UX Design, Figma, Adobe XD, Wireframing, Prototyping, User Research, Usability Testing, Design Systems, Accessibility, Responsive Design` },
+  { id: 'product-manager', title: 'Product Manager', category: 'Product', description: `We are hiring a Product Manager to define product vision, roadmap, and delivery strategy.\n\nSkills & Keywords:\nProduct Management, Roadmap Planning, Stakeholder Management, Agile, Scrum, User Stories, Market Research, KPI, OKRs, Data-Driven Decision Making` },
+  { id: 'frontend-developer', title: 'Frontend Developer', category: 'Technology', description: `We are seeking a Frontend Developer to design and develop responsive, high-performance user interfaces.\n\nSkills & Keywords:\nHTML5, CSS3, JavaScript (ES6+), React, Angular, Vue.js, Responsive Design, REST APIs, Web Performance Optimization, Cross-Browser Compatibility, Git, Agile` },
+  { id: 'backend-developer', title: 'Backend Developer', category: 'Technology', description: `We are hiring a Backend Developer to build scalable, secure, and high-performance server-side applications.\n\nSkills & Keywords:\nJava, Python, Node.js, Spring Boot, Django, REST APIs, GraphQL, Microservices, SQL, NoSQL, PostgreSQL, MySQL, MongoDB, Cloud (AWS/Azure/GCP), Docker, CI/CD, Agile` },
+  { id: 'qa-engineer', title: 'QA Engineer', category: 'Quality', description: `We are seeking a QA Engineer to ensure the quality, reliability, and performance of software applications.\n\nSkills & Keywords:\nSoftware Testing, Manual Testing, Automation Testing, Selenium, API Testing, TestNG, JUnit, Regression Testing, Bug Tracking, SDLC, Agile, CI/CD, Quality Assurance` },
+  { id: 'business-analyst', title: 'Business Analyst', category: 'Business', description: `We are looking for a Business Analyst to bridge the gap between business stakeholders and technical teams.\n\nSkills & Keywords:\nBusiness Analysis, Requirement Gathering, BRD, FRD, User Stories, Stakeholder Management, Process Mapping, SQL, Data Analysis, Agile, Scrum, UAT, Documentation` },
+  { id: 'financial-analyst', title: 'Financial Analyst', category: 'Finance', description: `We are hiring a Financial Analyst to support financial planning, analysis, and decision-making.\n\nSkills & Keywords:\nFinancial Analysis, Budgeting, Forecasting, Financial Modeling, Advanced Excel, Power BI, Tableau, KPI Analysis, Risk Assessment, Business Intelligence, Accounting Principles, Strategic Planning` },
+];
+
+
 const SalesDashboard: React.FC = () => {
   const navigate = useNavigate();
 
@@ -84,14 +102,30 @@ const SalesDashboard: React.FC = () => {
   const [viewingReport, setViewingReport] = useState<ATSSubmission | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [atsSearch, setAtsSearch] = useState('');
- const [linkedinSearch, setLinkedinSearch] = useState('');
+  const [linkedinSearch, setLinkedinSearch] = useState('');
   const [resumeSearchQuery, setResumeSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userResumes, setUserResumes] = useState<any[]>([]);
   const [showResumeModal, setShowResumeModal] = useState(false);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [resumeForm, setResumeForm] = useState({ title: '', template: 'digital-pro', category: 'Simple' });
+  const [resumeForm, setResumeForm] = useState({ title: '', template: 'geometric-blue', category: 'ATS' });
   const [creatingResumeLoading, setCreatingResumeLoading] = useState(false);
+
+  const [resumeJobDescription, setResumeJobDescription] = useState('');
+const [resumeSelectedJobRole, setResumeSelectedJobRole] = useState('');
+const [resumeJobDropdownOpen, setResumeJobDropdownOpen] = useState(false);
+const resumeJobDropdownRef = useRef<HTMLDivElement>(null);
+
+
+useEffect(() => {
+  const h = (e: MouseEvent) => {
+    if (resumeJobDropdownRef.current && !resumeJobDropdownRef.current.contains(e.target as Node))
+      setResumeJobDropdownOpen(false);
+  };
+  document.addEventListener('mousedown', h);
+  return () => document.removeEventListener('mousedown', h);
+}, []);
+
 
   useEffect(() => {
     checkSalesAccess();
@@ -109,7 +143,7 @@ const SalesDashboard: React.FC = () => {
     } else if (activeTab === 'linkedin-checker') {
       loadLinkedInSubmissions();
     }
-}, [activeTab, currentPage, searchQuery, resumeSearchQuery, atsSearch, linkedinSearch]);
+  }, [activeTab, currentPage, searchQuery, resumeSearchQuery, atsSearch, linkedinSearch]);
 
   const checkSalesAccess = async () => {
     try {
@@ -151,7 +185,7 @@ const SalesDashboard: React.FC = () => {
     }
   };
 
-const loadResumes = async () => {
+  const loadResumes = async () => {
     setLoading(true);
     try {
       const { data } = await api.get('/admin/resumes', {
@@ -317,7 +351,7 @@ const loadResumes = async () => {
   ];
 
 
-const getCreatedByLabel = (resume: any) => {
+  const getCreatedByLabel = (resume: any) => {
     if (!resume.adminCreated) {
       return (
         <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-blue-100 text-blue-700">
@@ -381,7 +415,7 @@ const getCreatedByLabel = (resume: any) => {
               <span className="font-medium">Users</span>
             </button>
 
-         <button
+            <button
               onClick={() => { setActiveTab('resumes'); setCurrentPage(1); setResumeSearchQuery(''); setSidebarOpen(false); }}
               className={`w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-colors text-sm sm:text-base ${activeTab === 'resumes' ? 'bg-[#EDC9AF] text-[#2c2a63]' : 'text-white hover:bg-white/10'}`}
             >
@@ -585,7 +619,7 @@ const getCreatedByLabel = (resume: any) => {
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
-                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mobile</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ATS Score</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
@@ -609,30 +643,30 @@ const getCreatedByLabel = (resume: any) => {
                             <span>{user.mobile || 'N/A'}</span>
                           </div>
                         </td>
-               <td className="px-6 py-4 whitespace-nowrap">
-  {user.atsScore != null ? (
-    <span
-      className="inline-flex px-2.5 py-1 text-xs font-bold rounded-full"
-      style={{
-        backgroundColor:
-          user.atsScore >= 75 ? '#d1fae5' :
-          user.atsScore >= 50 ? '#fef3c7' : '#fee2e2',
-        color:
-          user.atsScore >= 75 ? '#065f46' :
-          user.atsScore >= 50 ? '#92400e' : '#991b1b',
-      }}
-    >
-      {user.atsScore} / 100
-    </span>
-  ) : (
-    <span className="text-xs text-gray-400">No score</span>
-  )}
-</td>
-<td className="px-6 py-4 whitespace-nowrap">
-  <span className={`text-xs px-2 py-1 rounded-full font-semibold ${user.role === 'admin' ? 'bg-gray-100 text-gray-400' : getPlanColor(user.plan)}`}>
-    {user.role === 'admin' ? 'All Access' : user.plan}
-  </span>
-</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {user.atsScore != null ? (
+                            <span
+                              className="inline-flex px-2.5 py-1 text-xs font-bold rounded-full"
+                              style={{
+                                backgroundColor:
+                                  user.atsScore >= 75 ? '#d1fae5' :
+                                    user.atsScore >= 50 ? '#fef3c7' : '#fee2e2',
+                                color:
+                                  user.atsScore >= 75 ? '#065f46' :
+                                    user.atsScore >= 50 ? '#92400e' : '#991b1b',
+                              }}
+                            >
+                              {user.atsScore} / 100
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-400">No score</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`text-xs px-2 py-1 rounded-full font-semibold ${user.role === 'admin' ? 'bg-gray-100 text-gray-400' : getPlanColor(user.plan)}`}>
+                            {user.role === 'admin' ? 'All Access' : user.plan}
+                          </span>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'}`}>
                             {user.role}
@@ -683,7 +717,7 @@ const getCreatedByLabel = (resume: any) => {
           )}
 
           {/* ── RESUMES ── */}
-     {activeTab === 'resumes' && (
+          {activeTab === 'resumes' && (
             <div className="bg-white rounded-lg shadow-sm">
               <div className="p-3 sm:p-4 border-b border-gray-200">
                 <div className="relative">
@@ -1006,7 +1040,7 @@ const getCreatedByLabel = (resume: any) => {
                 </div>
                 <button
                   onClick={() => {
-                    setResumeForm({ title: '', template: 'digital-pro', category: 'Simple' });
+                setResumeForm({ title: '', template: 'geometric-blue', category: 'ATS' });
                     setShowResumeModal(true);
                   }}
                   className="px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2"
@@ -1022,11 +1056,11 @@ const getCreatedByLabel = (resume: any) => {
                   userResumes.map((resume: any) => (
                     <div key={resume._id} className="p-4 flex items-center justify-between hover:bg-gray-50">
                       <div>
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <p className="font-semibold text-gray-900">{resume.title}</p>
                           <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${resume.status === 'published'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-yellow-100 text-yellow-700'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-yellow-100 text-yellow-700'
                             }`}>
                             {resume.status === 'published' ? 'Sent' : 'Draft'}
                           </span>
@@ -1054,155 +1088,226 @@ const getCreatedByLabel = (resume: any) => {
             </div>
           )}
 
-          {/* ── CREATE RESUME MODAL ── */}
-          {showResumeModal && selectedUser && (
-            <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-4">
-              <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-[#2c2a63]">
-                    Create Resume for {selectedUser.name}
-                  </h3>
-                  <button onClick={() => setShowResumeModal(false)}>
-                    <X size={20} />
-                  </button>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">Resume Title</label>
-                    <input
-                      value={resumeForm.title}
-                      onChange={(e) => setResumeForm({ ...resumeForm, title: e.target.value })}
-                      placeholder="e.g. Frontend Developer Resume"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">Category</label>
-                    <select
-                      value={resumeForm.category}
-                      onChange={(e) => setResumeForm({ ...resumeForm, category: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
-                    >
-                      <option value="All">All</option>
-                      <option value="Simple">Simple</option>
-                      <option value="Word">Word</option>
-                      <option value="Picture">Picture</option>
-                      <option value="ATS">ATS</option>
-                      <option value="Two-column">Two-column</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">Template</label>
-                    <select
-                      value={resumeForm.template}
-                      onChange={(e) => setResumeForm({ ...resumeForm, template: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
-                    >
-                      {(resumeForm.category === 'All'
-                        ? allTemplates
-                        : allTemplates.filter(t => t.category === resumeForm.category)
-                      ).map(t => (
-                        <option key={t.id} value={t.id}>{t.name}</option>
-                      ))}
-                    </select>
-                  </div>
+{/* ── CREATE RESUME MODAL ── */}
+{showResumeModal && selectedUser && (
+  <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-4">
+    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-bold text-[#2c2a63]">
+          Create Resume for {selectedUser.name}
+        </h3>
+        <button onClick={() => { setShowResumeModal(false); setPdfFile(null); setResumeJobDescription(''); setResumeSelectedJobRole(''); setResumeJobDropdownOpen(false); }}>
+          <X size={20} />
+        </button>
+      </div>
 
-                  {/* PDF Upload */}
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      Upload Resume PDF <span className="text-gray-400">(optional)</span>
-                    </label>
-                    <div
-                      className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-[#2c2a63] transition-colors"
-                      onClick={() => document.getElementById('salesPdfUpload')?.click()}
-                    >
-                      <input
-                        id="salesPdfUpload"
-                        type="file"
-                        accept=".pdf"
-                        style={{ display: 'none' }}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            if (file.size > 5 * 1024 * 1024) {
-                              toast.error('PDF must be less than 5MB');
-                              return;
-                            }
-                            setPdfFile(file);
-                          }
-                        }}
-                      />
-                      {pdfFile ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <FileText size={16} className="text-green-600" />
-                          <span className="text-sm text-green-600 font-semibold">{pdfFile.name}</span>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setPdfFile(null); }}
-                            className="text-red-500 hover:text-red-700 ml-1"
-                          >
-                            <X size={14} />
-                          </button>
-                        </div>
-                      ) : (
-                        <>
-                          <UploadCloud size={20} className="text-gray-400 mx-auto mb-1" />
-                          <p className="text-xs text-gray-500">Click to upload PDF resume</p>
-                          <p className="text-xs text-gray-400">Max 5MB</p>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
+      <div className="space-y-4">
+        {/* Resume Title */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1">Resume Title</label>
+          <input
+            value={resumeForm.title}
+            onChange={(e) => setResumeForm({ ...resumeForm, title: e.target.value })}
+            placeholder="e.g. Frontend Developer Resume"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
+          />
+        </div>
 
-                <div className="flex gap-3 justify-end mt-6 pt-4 border-t border-gray-200">
-                  <button
-                    onClick={() => setShowResumeModal(false)}
-                    className="px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg text-sm font-medium"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    disabled={!resumeForm.title || creatingResumeLoading}
-                    onClick={async () => {
-                      if (!resumeForm.title) return;
-                      setCreatingResumeLoading(true);
-                      try {
-                        const formData = new FormData();
-                        formData.append('title', resumeForm.title);
-                        formData.append('template', resumeForm.template);
-                        if (pdfFile) formData.append('resumePdf', pdfFile);
+        {/* Category */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1">Category</label>
+          <select
+            value={resumeForm.category}
+            onChange={(e) => {
+              const newCategory = e.target.value;
+              const filtered = newCategory === 'All' ? allTemplates : allTemplates.filter(t => t.category === newCategory);
+              setResumeForm({ ...resumeForm, category: newCategory, template: filtered[0]?.id || 'geometric-blue' });
+            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
+          >
+            <option value="All">All</option>
+            <option value="Simple">Simple</option>
+            <option value="Word">Word</option>
+            <option value="Picture">Picture</option>
+            <option value="ATS">ATS</option>
+            <option value="Two-column">Two-column</option>
+          </select>
+        </div>
 
-                        const { data } = await api.post(
-                          `/admin/users/${selectedUser._id}/resumes`,
-                          formData,
-                          { headers: { 'Content-Type': 'multipart/form-data' } }
-                        );
-                        toast.success('Resume created! Redirecting to editor...');
-                        setShowResumeModal(false);
-                        setPdfFile(null);
-                        navigate(`/app/builder/${data.resume._id}`);
-                      } catch (error: any) {
-                        toast.error(error?.response?.data?.message || 'Failed to create resume');
-                      } finally {
-                        setCreatingResumeLoading(false);
-                      }
-                    }}
-                    className="px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{ backgroundColor: '#2c2a63', color: '#EDC9AF' }}
-                  >
-                    {creatingResumeLoading ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-[#EDC9AF] border-t-transparent rounded-full animate-spin" />
-                        Creating...
-                      </>
-                    ) : (
-                      'Create & Edit Resume'
-                    )}
-                  </button>
-                </div>
+        {/* Template */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1">Template</label>
+          <select
+            value={resumeForm.template}
+            onChange={(e) => setResumeForm({ ...resumeForm, template: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
+          >
+            {(resumeForm.category === 'All' ? allTemplates : allTemplates.filter(t => t.category === resumeForm.category)).map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* PDF Upload */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1">
+            Upload Resume PDF <span className="text-gray-400">(optional)</span>
+          </label>
+          <div
+            className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-[#2c2a63] transition-colors"
+            onClick={() => document.getElementById('salesPdfUpload')?.click()}
+          >
+            <input
+              id="salesPdfUpload"
+              type="file"
+              accept=".pdf"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  if (file.size > 5 * 1024 * 1024) { toast.error('PDF must be less than 5MB'); return; }
+                  setPdfFile(file);
+                }
+              }}
+            />
+            {pdfFile ? (
+              <div className="flex items-center justify-center gap-2">
+                <FileText size={16} className="text-green-600" />
+                <span className="text-sm text-green-600 font-semibold">{pdfFile.name}</span>
+                <button onClick={(e) => { e.stopPropagation(); setPdfFile(null); }} className="text-red-500 hover:text-red-700 ml-1">
+                  <X size={14} />
+                </button>
               </div>
+            ) : (
+              <>
+                <UploadCloud size={20} className="text-gray-400 mx-auto mb-1" />
+                <p className="text-xs text-gray-500">Click to upload PDF resume</p>
+                <p className="text-xs text-gray-400">Max 5MB</p>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Job Description */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1">
+            Job Description{' '}
+            <span style={{ background: '#2c2a63', color: '#EDC9AF', padding: '2px 8px', borderRadius: 6, fontSize: 10, fontWeight: 700, marginLeft: 4 }}>
+              OPTIONAL
+            </span>
+          </label>
+          <p className="text-xs text-gray-400 mb-2 italic">Tailor the resume content to a specific role</p>
+
+          {/* Dropdown */}
+          <div ref={resumeJobDropdownRef} style={{ position: 'relative', marginBottom: 8 }}>
+            <div
+              onClick={() => setResumeJobDropdownOpen(o => !o)}
+              className="w-full px-3 py-2 border rounded-lg text-sm cursor-pointer flex justify-between items-center"
+              style={{
+                border: resumeSelectedJobRole ? '2px solid #10b981' : '2px solid #2c2a63',
+                color: resumeSelectedJobRole ? '#10b981' : '#2c2a63',
+                background: '#fff',
+                boxSizing: 'border-box',
+              }}
+            >
+              <span className="truncate text-sm">{resumeSelectedJobRole || 'Pick a job role (optional)…'}</span>
+              <svg className={`w-4 h-4 flex-shrink-0 ml-2 transition-transform ${resumeJobDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+            {resumeJobDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-[#2c2a63] rounded-lg shadow-xl overflow-y-auto z-50" style={{ maxHeight: 200 }}>
+                {jobDescriptionSamples.map(sample => (
+                  <div
+                    key={sample.id}
+                    onClick={() => { setResumeJobDescription(sample.description); setResumeSelectedJobRole(sample.title); setResumeJobDropdownOpen(false); }}
+                    className="px-3 py-2 cursor-pointer text-sm font-semibold text-[#2c2a63] border-b border-gray-100 hover:bg-blue-50 transition-colors"
+                  >
+                    {sample.title} <span className="text-gray-400 font-normal text-xs">({sample.category})</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Selected badge */}
+          {resumeSelectedJobRole && resumeSelectedJobRole !== 'Custom Job Description' && (
+            <div className="mb-2 px-3 py-2 bg-green-50 border border-green-400 rounded-lg flex items-center gap-2 text-xs text-green-700 font-semibold">
+              <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="flex-1 truncate">{resumeSelectedJobRole} selected</span>
+              <button onClick={() => { setResumeSelectedJobRole(''); setResumeJobDescription(''); }} className="text-green-700 hover:text-green-900">
+                <X size={14} />
+              </button>
             </div>
           )}
+
+          {/* Custom textarea */}
+          <textarea
+            value={resumeJobDescription}
+            onChange={e => {
+              setResumeJobDescription(e.target.value);
+              if (e.target.value && !resumeSelectedJobRole) setResumeSelectedJobRole('Custom Job Description');
+              else if (!e.target.value) setResumeSelectedJobRole('');
+            }}
+            placeholder="Or paste a custom job description here…"
+            rows={3}
+            className="w-full px-3 py-2 border rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
+            style={{ borderColor: resumeJobDescription.trim() ? '#10b981' : '#e5e7eb' }}
+          />
+        </div>
+      </div>
+
+      <div className="flex gap-3 justify-end mt-6 pt-4 border-t border-gray-200">
+        <button
+          onClick={() => { setShowResumeModal(false); setPdfFile(null); setResumeJobDescription(''); setResumeSelectedJobRole(''); setResumeJobDropdownOpen(false); }}
+          className="px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg text-sm font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          disabled={!resumeForm.title || creatingResumeLoading}
+          onClick={async () => {
+            if (!resumeForm.title) return;
+            setCreatingResumeLoading(true);
+            try {
+              const formData = new FormData();
+              formData.append('title', resumeForm.title);
+              formData.append('template', resumeForm.template);
+              if (pdfFile) formData.append('resumePdf', pdfFile);
+              if (resumeJobDescription.trim()) formData.append('jobDescription', resumeJobDescription.trim());
+
+              const { data } = await api.post(`/admin/users/${selectedUser._id}/resumes`, formData);
+              toast.success('Resume created! Redirecting to editor...');
+              setShowResumeModal(false);
+              setPdfFile(null);
+              setResumeJobDescription('');
+              setResumeSelectedJobRole('');
+              navigate(`/app/builder/${data.resume._id}`);
+            } catch (error: any) {
+              toast.error(error?.response?.data?.message || 'Failed to create resume');
+            } finally {
+              setCreatingResumeLoading(false);
+            }
+          }}
+          className="px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ backgroundColor: '#2c2a63', color: '#EDC9AF' }}
+        >
+          {creatingResumeLoading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-[#EDC9AF] border-t-transparent rounded-full animate-spin" />
+              Creating...
+            </>
+          ) : (
+            'Create & Edit Resume'
+          )}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+       
 
           {/* Loading Spinner */}
           {loading && (

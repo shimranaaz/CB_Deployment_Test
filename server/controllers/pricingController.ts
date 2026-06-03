@@ -32,15 +32,14 @@ const defaultPlans = [
     priceDisplay: '₹99',
     priceUnit: '/ Resume',
     description: 'Get 7 days to explore premium templates and basic features.',
-    features: [
-      { text: 'All premium templates and color styles', included: true },
-      { text: '1 Premium Resume', included: true },
-      { text: 'Download in PDF format', included: true },
-      { text: '7 Days Access', included: true },
-      { text: 'Live AI suggestions while you type', included: false },
-      { text: 'Real‑time online preview', included: false },
-      { text: 'Email support', included: false },
-    ],
+features: [
+  { text: 'Download in PDF & Word', included: true },
+  { text: '50+ Premium Templates', included: true },
+  { text: 'AI Resume Enhancer', included: true },
+  { text: 'Live ATS Score Tracking', included: true },
+  { text: 'One Resume, Multiple ATS-Optimized Outputs ', included: true },
+  { text: 'LinkedIn Profile Review', included: true },
+],
     buttonText: 'Try Now',
     popular: false,
     isFree: false,
@@ -54,15 +53,14 @@ const defaultPlans = [
     priceDisplay: '₹399',
     priceUnit: '/ Resume',
     description: 'Get full access for 30 days to design, refine, and export job‑ready resumes.',
-    features: [
-      { text: 'Unlimited resume edits and versions', included: true },
-      { text: 'All premium templates and color styles', included: true },
-      { text: 'Live AI suggestions while you type', included: true },
-      { text: '1 Premium Resume', included: true },
-      { text: 'Real‑time online preview', included: false },
-      { text: 'Export in high‑quality PDF only', included: false },
-      { text: 'Email support', included: false },
-    ],
+   features: [
+  { text: 'Download in PDF & Word', included: true },
+  { text: '50+ Premium Templates', included: true },
+  { text: 'AI Resume Enhancer', included: true },
+  { text: 'Live ATS Score Tracking', included: true },
+  { text: 'One Resume, Multiple ATS-Optimized Outputs', included: true },
+  { text: 'LinkedIn Profile Review', included: true },
+],
     buttonText: 'Get Now',
     popular: false,
     isFree: false,
@@ -76,15 +74,14 @@ const defaultPlans = [
     priceDisplay: '₹499',
     priceUnit: '/ Resume',
     description: 'Locked‑in access for 90 days to tune every resume for every role.',
-    features: [
-      { text: 'Unlimited resumes for different job roles', included: true },
-      { text: 'AI keyword match against job descriptions', included: true },
-      { text: 'ATS‑friendly optimization and score hints', included: true },
-      { text: 'Smart application tracking dashboard', included: true },
-      { text: '3 Premium Resumes', included: true },
-      { text: 'Early access to new templates and layouts', included: false },
-      { text: 'Priority email & WhatsApp support', included: false },
-    ],
+  features: [
+  { text: 'Download in PDF & Word', included: true },
+  { text: '50+ Premium Templates', included: true },
+  { text: 'AI Resume Enhancer', included: true },
+  { text: 'Live ATS Score Tracking', included: true },
+  { text: 'One Resume, Multiple ATS-Optimized Outputs', included: true },
+  { text: 'LinkedIn Profile Review ', included: true },
+],
     buttonText: 'Get Now',
     popular: true,
     isFree: false,
@@ -98,14 +95,14 @@ const defaultPlans = [
     priceDisplay: '₹999',
     priceUnit: '/ Resume',
     description: 'Build, test, and perfect your profile across the entire year.',
-    features: [
-      { text: 'Unlimited everything inside the studio', included: true },
-      { text: 'Deep‑dive AI score and fix suggestions', included: true },
-      { text: 'Shareable online resume links & snapshots', included: true },
-      { text: 'Multi‑language resume support', included: true },
-      { text: 'VIP 1:1 priority help when you need it', included: true },
-      { text: '5 Premium Resumes', included: true },
-    ],
+   features: [
+  { text: 'Download in PDF & Word', included: true },
+  { text: '50+ Premium Templates', included: true },
+  { text: 'AI Resume Enhancer', included: true },
+  { text: 'Live ATS Score Tracking', included: true },
+  { text: 'One Resume, Multiple ATS-Optimized Outputs', included: true },
+  { text: 'LinkedIn Profile Review', included: true },
+],
     buttonText: 'Get Now',
     popular: false,
     isFree: false,
@@ -170,12 +167,13 @@ export const updatePricing = async (req: Request, res: Response): Promise<void> 
 };
 
 // POST /api/pricing/initialize — admin only
+// NEW
 export const initializePricing = async (req: Request, res: Response): Promise<void> => {
   try {
     for (const plan of defaultPlans) {
       await Pricing.findOneAndUpdate(
         { planKey: plan.planKey },
-        { $setOnInsert: plan },
+        { $set: plan },
         { upsert: true, new: true }
       );
     }
@@ -224,6 +222,7 @@ export const addPricingPlan = async (req: Request, res: Response): Promise<void>
   }
 };
 
+// DELETE /api/pricing/:planKey — admin only
 export const deletePricingPlan = async (req: Request, res: Response): Promise<void> => {
   try {
     const { planKey } = req.params;

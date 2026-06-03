@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { ArrowLeft, Check, CreditCard, Smartphone, Wallet } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import api from '../configs/api';
 import toast from 'react-hot-toast';
 
@@ -35,6 +35,96 @@ interface PricingPlan {
   price: number;
   features: { text: string; included: boolean }[];
 }
+
+const FeatureIcon = ({ feature }: { feature: string }) => {
+  if (feature.includes('Download')) return (
+    <div style={{ background: '#ede9fe', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M12 3v13" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" />
+        <path d="M8 12l4 4 4-4" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+
+  if (feature.includes('AI Resume')) return (
+    <div style={{ background: '#fff7ed', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+
+  if (feature.includes('50+') || feature.includes('Template')) return (
+    <div style={{ background: '#dcfce7', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="2" width="16" height="20" rx="2" stroke="#16a34a" strokeWidth="2" />
+        <line x1="8" y1="7" x2="16" y2="7" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" />
+        <line x1="8" y1="11" x2="16" y2="11" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" />
+        <line x1="8" y1="15" x2="13" y2="15" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+
+  // ✅ MUST come BEFORE the ATS check — "One Resume, Multiple ATS-Optimized Outputs" contains "ATS"
+  if (feature.includes('One Resume') || feature.includes('Multiple')) return (
+    <div style={{ background: '#dbeafe', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="15" width="20" height="5" rx="1.5" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" />
+        <rect x="2" y="9.5" width="20" height="5" rx="1.5" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" />
+        <rect x="2" y="4" width="20" height="5" rx="1.5" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+
+  if (feature.includes('ATS')) return (
+    <div style={{ background: '#ede9fe', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke="#7c3aed" strokeWidth="2" />
+        <circle cx="12" cy="12" r="5" stroke="#7c3aed" strokeWidth="2" />
+        <circle cx="12" cy="12" r="2" fill="#7c3aed" />
+      </svg>
+    </div>
+  );
+
+  if (feature.includes('LinkedIn')) return (
+    <div style={{ background: '#dbeafe', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="2" width="20" height="20" rx="3" stroke="#0a66c2" strokeWidth="2" />
+        <path d="M7 10v7M7 7v.01" stroke="#0a66c2" strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M11 17v-4a2 2 0 014 0v4M11 13v4" stroke="#0a66c2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+
+  if (feature.includes('Priority')) return (
+    <div style={{ background: '#fff7ed', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M3 18v-6a9 9 0 0118 0v6" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" />
+        <rect x="16" y="14" width="5" height="6" rx="2" stroke="#ea580c" strokeWidth="2" />
+        <rect x="3" y="14" width="5" height="6" rx="2" stroke="#ea580c" strokeWidth="2" />
+      </svg>
+    </div>
+  );
+
+  if (feature.includes('One Time') || feature.includes('Lifetime')) return (
+    <div style={{ background: '#ffe4e6', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="18" height="14" viewBox="0 0 30 18" fill="none">
+        <path d="M15 9C13 5.5 10 3 6.5 3a6 6 0 000 12C10 15 13 12.5 15 9z" stroke="#e11d48" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M15 9c2 3.5 5 6 8.5 6a6 6 0 000-12C20 3 17 5.5 15 9z" stroke="#e11d48" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+
+  return (
+    <div style={{ background: '#dcfce7', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M5 13l4 4L19 7" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+};
 
 const Payment: React.FC = () => {
   const location = useLocation();
@@ -103,22 +193,20 @@ const Payment: React.FC = () => {
     };
   }, [state, navigate, token, user]);
 
-  const LINKEDIN_PLANS = ['starter', 'power', 'pro', 'Basic', 'Advanced', 'Professional'];
-
   const getPlanDetails = () => {
-     if (state.type === 'linkedin-optimization') {
-    const linkedinPlan = dbPlans.find(p => p.planKey === 'linkedin');
-    return {
-      title: 'LinkedIn Optimization',
-      plan: 'linkedin',
-      displayName: 'LinkedIn Optimization',
-      price: state.price,
-      features: linkedinPlan
-        ? linkedinPlan.features.filter(f => f.included).map(f => f.text)
-        : ['LinkedIn Profile Review', 'Headline & Summary Rewrite', 'Keyword Optimization', '3 Optimization Sessions'],
-      includesLinkedIn: false,
-    };
-  }
+    if (state.type === 'linkedin-optimization') {
+      const linkedinPlan = dbPlans.find(p => p.planKey === 'linkedin');
+      return {
+        title: 'LinkedIn Optimization',
+        plan: 'linkedin',
+        displayName: 'LinkedIn Optimization',
+        price: state.price,
+        features: linkedinPlan
+          ? linkedinPlan.features.filter(f => f.included).map(f => f.text)
+          : ['LinkedIn Profile Review', 'Headline & Summary Rewrite', 'Keyword Optimization', '3 Optimization Sessions'],
+      };
+    }
+
     if (state.type === 'single-template') {
       return {
         title: `Unlock ${state.templateName || 'Template'}`,
@@ -131,22 +219,13 @@ const Payment: React.FC = () => {
           'Lifetime access to this template',
           'Download as PDF anytime',
         ],
-        includesLinkedIn: false,
       };
     }
 
-    const matchedByKey = state.plan
-      ? dbPlans.find(p => p.planKey === state.plan)
-      : null;
-
-    const matchedByPrice = !matchedByKey
-      ? dbPlans.find(p => p.price === state.price)
-      : null;
-
+    const matchedByKey = state.plan ? dbPlans.find(p => p.planKey === state.plan) : null;
+    const matchedByPrice = !matchedByKey ? dbPlans.find(p => p.price === state.price) : null;
     const matchedDbPlan = matchedByKey || matchedByPrice;
-
     const planKey = state.plan || 'starter';
-    const includesLinkedIn = LINKEDIN_PLANS.includes(planKey);
 
     if (matchedDbPlan) {
       return {
@@ -154,43 +233,63 @@ const Payment: React.FC = () => {
         plan: matchedDbPlan.planKey,
         displayName: matchedDbPlan.name,
         price: matchedDbPlan.price,
-        features: matchedDbPlan.features
-          .filter(f => f.included)
-          .map(f => f.text),
-        includesLinkedIn,
+        features: matchedDbPlan.features.filter(f => f.included).map(f => f.text),
       };
     }
 
     const planMap: Record<string, { displayName: string; features: string[] }> = {
       trial: {
         displayName: 'Trial · 7 Days',
-        features: ['All Premium Templates', '1 Resume Download', '7 Days Access', 'Basic Support'],
+        features: [
+          'Download in PDF & Word — high-quality PDF and editable Word file',
+          '50+ Premium Templates — recruiter-approved designs',
+          'LinkedIn Profile Review — detailed LinkedIn optimization guide',
+          'Priority Support — get expert help whenever you need',
+          'One Time Payment — lifetime access, no recurring charges',
+        ],
       },
       starter: {
         displayName: 'Starter · 1 Month',
-        features: ['1 Premium Resume Download', 'All Premium Templates', '30 Days Access', 'Email Support'],
+        features: [
+          'Download in PDF & Word — high-quality PDF and editable Word file',
+          '50+ Premium Templates — recruiter-approved designs',
+          'LinkedIn Profile Review — detailed LinkedIn optimization guide',
+          'Priority Support — get expert help whenever you need',
+          'One Time Payment — lifetime access, no recurring charges',
+        ],
       },
       power: {
         displayName: 'Power User · 3 Months',
-        features: ['3 Premium Resumes Download', 'All Premium Templates', '90 Days Access', 'Priority Email Support'],
+        features: [
+          'Download in PDF & Word — high-quality PDF and editable Word file',
+          '50+ Premium Templates — recruiter-approved designs',
+          'LinkedIn Profile Review — detailed LinkedIn optimization guide',
+          'Priority Support — get expert help whenever you need',
+          'One Time Payment — lifetime access, no recurring charges',
+        ],
       },
       pro: {
         displayName: 'Pro Member · 1 Year',
-        features: ['5 Premium Resumes Download', 'All Premium Templates', '1 Year Access', 'Priority Support'],
+        features: [
+          'Download in PDF & Word — high-quality PDF and editable Word file',
+          '50+ Premium Templates — recruiter-approved designs',
+          'LinkedIn Profile Review — detailed LinkedIn optimization guide',
+          'Priority Support — get expert help whenever you need',
+          'One Time Payment — lifetime access, no recurring charges',
+        ],
       },
     };
 
     const plan = planMap[planKey] || planMap['starter'];
-
     return {
       title: `${plan.displayName} Plan`,
       plan: planKey,
       displayName: plan.displayName,
       price: state.price,
       features: plan.features,
-      includesLinkedIn,
     };
   };
+
   const planDetails = getPlanDetails();
 
   const handleApplyCoupon = async () => {
@@ -311,7 +410,6 @@ const Payment: React.FC = () => {
 
             if (verifyResponse.data.success) {
               toast.success('Payment successful! 🎉');
-
               setTimeout(() => {
                 navigate('/payment-success', {
                   state: {
@@ -329,7 +427,6 @@ const Payment: React.FC = () => {
             }
           } catch (error: any) {
             console.error('❌ Payment verification error:', error);
-
             api.post('/payments/log-failure', {
               orderId: orderData.orderId,
               errorCode: 'VERIFICATION_FAILED',
@@ -338,7 +435,6 @@ const Payment: React.FC = () => {
             }).catch(err => console.warn('⚠️ Failed to log verification failure:', err));
 
             toast.error(error?.response?.data?.message || 'Payment verification failed');
-
             setTimeout(() => {
               navigate('/payment-failed', {
                 state: {
@@ -356,14 +452,12 @@ const Payment: React.FC = () => {
             if (paymentProcessed) return;
             console.log('ℹ️ Payment modal closed by user');
             setLoading(false);
-
             api.post('/payments/log-failure', {
               orderId: orderData.orderId,
               errorCode: 'USER_CANCELLED',
               errorDescription: 'User closed payment modal',
               errorReason: 'Modal dismissed'
             }).catch(err => console.warn('⚠️ Failed to log cancellation:', err));
-
             toast('Payment cancelled', { icon: 'ℹ️' });
           },
           escape: true,
@@ -397,15 +491,9 @@ const Payment: React.FC = () => {
           if (!razorpayContainer) {
             clearInterval(waitForModalClose);
             toast.error('Payment failed: ' + errorDescription, { duration: 4000, position: 'top-center' });
-
             setTimeout(() => {
               navigate('/payment-failed', {
-                state: {
-                  errorCode,
-                  errorMessage: errorDescription,
-                  amount: finalAmount,
-                  plan: planDetails.displayName
-                },
+                state: { errorCode, errorMessage: errorDescription, amount: finalAmount, plan: planDetails.displayName },
                 replace: true
               });
             }, 500);
@@ -415,12 +503,7 @@ const Payment: React.FC = () => {
         setTimeout(() => {
           clearInterval(waitForModalClose);
           navigate('/payment-failed', {
-            state: {
-              errorCode,
-              errorMessage: errorDescription,
-              amount: finalAmount,
-              plan: planDetails.displayName
-            },
+            state: { errorCode, errorMessage: errorDescription, amount: finalAmount, plan: planDetails.displayName },
             replace: true
           });
         }, 10000);
@@ -430,7 +513,6 @@ const Payment: React.FC = () => {
       setLoading(false);
     } catch (error: any) {
       console.error('❌ Payment initiation error:', error);
-
       if (error?.response?.status === 401) {
         toast.error('Session expired. Please login again.');
         setTimeout(() => navigate('/login'), 1500);
@@ -439,7 +521,6 @@ const Payment: React.FC = () => {
       } else {
         toast.error(error?.response?.data?.message || error?.message || 'Failed to initiate payment');
       }
-
       setLoading(false);
     }
   };
@@ -504,65 +585,40 @@ const Payment: React.FC = () => {
                   <div className="text-2xl font-bold text-[#2c2a63]">₹{planDetails.price}</div>
                 </div>
                 <p className="text-sm text-gray-600">One-time payment</p>
+                <div className="mt-3 inline-flex items-center gap-1.5 bg-[#eeedf8] border border-[#b0aedd] text-[#2c2a63] text-xs font-semibold px-3 py-1.5 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-[#2e7d32]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                  42% Higher response rate from recruiters
+                </div>
               </div>
 
-              {planDetails.includesLinkedIn && (
-                <div className="mb-4 flex items-center gap-3 rounded-xl border border-[#EDC9AF] px-4 py-3"
-                  style={{ background: 'linear-gradient(135deg, #f5f0eb, #faf7f4)' }}>
-                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#2c2a63]">
-                    <i className="fab fa-linkedin-in" style={{ fontSize: '15px', color: '#EDC9AF' }}></i>
-                  </div>
-                  <p className="text-[13px] font-bold leading-snug" style={{ color: '#333' }}>
-                    ✨ This plan includes <span style={{ color: '#333' }}>Free LinkedIn Profile Optimization</span> (3 uses)
-                  </p>
-                </div>
-              )}
-
+              {/* What's included */}
               <div className="mb-6">
                 <h4 className="font-semibold text-[#2c2a63] mb-3">What's included:</h4>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {planDetails.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <li key={index} className="flex items-center gap-3">
+                      <FeatureIcon feature={feature} />
                       <span className="text-gray-700 text-sm">{feature}</span>
                     </li>
                   ))}
-                  {/* Also show LinkedIn as a feature bullet */}
-                  {planDetails.includesLinkedIn && (
-                    <li className="flex items-start gap-2">
-                      <Check className="w-5 h-5 flex-shrink-0 mt-0.5 text-green-500" />
-                      <span className="text-sm font-semibold" style={{ color: '#333' }}>
-                        Free LinkedIn Profile Optimization (3 uses)
-                      </span>
-                    </li>
-                  )}
                 </ul>
               </div>
 
-              <div className="mb-6 border-t border-gray-200 pt-6">
-                <h4 className="font-semibold text-[#2c2a63] mb-3">Accepts Payment Methods</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <CreditCard className="w-5 h-5 text-[#2c2a63]" />
-                    <span className="text-sm text-gray-700">Card / UPI</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <Smartphone className="w-5 h-5 text-[#2c2a63]" />
-                    <span className="text-sm text-gray-700">Net Banking</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <Wallet className="w-5 h-5 text-[#2c2a63]" />
-                    <span className="text-sm text-gray-700">Wallets</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <svg className="w-5 h-5 text-[#2c2a63]" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm4 4H7V7h2v2zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm4 4H7v-2h2v2zM13 3h8v8h-8V3zm2 2v4h4V5h-4zm4 4h-2V7h2v2zM13 13h2v2h-2v-2zm0 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zm2-2h2v2h-2v-2z" />
-                    </svg>
-                    <span className="text-sm text-gray-700">GPay Scanner</span>
+              <div className="mb-4">
+                <div className="mb-6 border-t border-gray-200 pt-6">
+                  <h4 className="font-semibold text-[#2c2a63] mb-3">Accepts Payment Methods</h4>
+                  <div className="flex items-center gap-3">
+                    <img src="/assets/Services/upi.png" alt="UPI" className="h-6 object-contain" />
+                    <img src="/assets/Services/Gpay-upi.png" alt="GPay" className="h-6 object-contain" />
+                    <img src="/assets/Services/phone-pe.png" alt="PhonePe" className="h-6 object-contain" />
+                    <img src="/assets/Services/netbanking.png" alt="Net Banking" className="h-6 object-contain" />
+                    <img src="/assets/Services/wallet.png" alt="Wallet" className="h-6 object-contain" />
                   </div>
                 </div>
-              </div>
-              <div className="mb-4">
+
                 <h4 className="font-semibold text-[#2c2a63] mb-2 text-sm">Have a coupon?</h4>
                 {!appliedCoupon ? (
                   <div className="flex gap-2">
@@ -609,6 +665,7 @@ const Payment: React.FC = () => {
                   </div>
                 </div>
               )}
+
               <div className="bg-gradient-to-r from-[#2c2a63] to-[#3d3a7a] rounded-xl p-4 mb-6">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-semibold text-[#EDC9AF]">Total Due Now</span>
@@ -626,9 +683,16 @@ const Payment: React.FC = () => {
                 {loading ? 'Processing...' : 'Pay Now'}
               </button>
 
-              <p className="text-xs text-center text-gray-500 mt-4">
-                🔒 Secure payment powered by Razorpay
-              </p>
+              <div className="mt-4 border border-[#b0aedd] bg-[#eeedf8] rounded-xl px-4 py-3 flex flex-col items-center gap-1">
+                <div className="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  <span className="text-xs font-semibold text-green-700">256-bit SSL Encrypted · 100% Secure Checkout</span>
+                </div>
+          <p className="text-[11px] text-[#2c2a63]">Powered by <span className="font-semibold text-[#2c2a63]">Razorpay</span> · Trusted by 5M+ businesses worldwide</p>
+              </div>
             </div>
           </div>
         </div>

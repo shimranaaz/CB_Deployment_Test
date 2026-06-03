@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt, faPalette, faEnvelope, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faFileAlt, faPalette, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {
    ChevronLeft, ChevronRight, DownloadIcon,
   EyeIcon, EyeOffIcon, Share2Icon, LucideIcon,
@@ -12,7 +12,6 @@ import PersonalInfoForm from '../components/PersonalInfoForm';
 import ResumePreview from '../components/ResumePreview';
 import TemplateSelector from '../components/TemplateSelector';
 import ColorPicker from '../components/ColorPicker';
-import CoverLetterSidebar from '../components/CoverLetterSidebar';
 import ProfessionalSummaryForm from '../components/ProfessionalSummaryForm';
 import ExperienceForm from '../components/ExperienceForm';
 import EducationForm from '../components/EducationForm';
@@ -27,12 +26,6 @@ import api from '../configs/api';
 import toast from 'react-hot-toast';
 import { PersonalInfo, Experience, Education, Project, AdditionalInfo, ResumeData } from '../types/resume';
 
-interface CoverLetter {
-  _id: string;
-  title: string;
-  updatedAt: string;
-  header_color?: string;
-}
 
 interface Section {
   id: string;
@@ -82,6 +75,7 @@ const DownloadUnlockModal: React.FC<DownloadUnlockModalProps> = ({
   const [selectedPlan, setSelectedPlan] = useState<string>('power');
   const [animatedBefore, setAnimatedBefore] = useState(0);
   const [animatedAfter, setAnimatedAfter] = useState(0);
+  
 
 const [fallbackScore] = useState(() => Math.floor(Math.random() * 5) + 37); // 37–41, stable
 const beforeScore = userAtsScore ?? fallbackScore;
@@ -492,21 +486,6 @@ const afterScore = 85;
                   Continue with Free
                 </button>
               )}
-
-              {/* Money back guarantee */}
-              <div
-                className="flex items-center gap-3 p-3.5 rounded-xl"
-                style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0' }}
-              >
-                <i
-                  className="fa-solid fa-circle-check text-lg flex-shrink-0"
-                  style={{ color: '#10b981' }}
-                />
-                <p className="text-[11px] text-gray-600 leading-snug">
-                  <span className="font-bold text-gray-800">30-Day Money Back Guarantee</span>
-                  {' '}· Not satisfied? Get a full refund within 30 days.
-                </p>
-              </div>
             </div>
           </div>
         </div>
@@ -544,8 +523,8 @@ const ResumeBuilder: React.FC = () => {
     projects: [],
     skills: [],
     additional_info: {},
-    template: "digital-pro",
-    accent_color: "#3B82F6",
+   template: "geometric-blue",
+  accent_color: "#2c2a63",
     public: false,
     status: 'draft',
   });
@@ -572,9 +551,7 @@ const ResumeBuilder: React.FC = () => {
 
   const [showTemplateModal, setShowTemplateModal] = useState<boolean>(false);
   const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
-  const [showCoverLetterModal, setShowCoverLetterModal] = useState<boolean>(false);
-  const [coverLetters, setCoverLetters] = useState<CoverLetter[]>([]);
-  const [isLoadingCoverLetters, setIsLoadingCoverLetters] = useState<boolean>(false);
+
 
   const [showPersonalInfoLimitModal, setShowPersonalInfoLimitModal] = useState<boolean>(false);
 
@@ -582,7 +559,7 @@ const ResumeBuilder: React.FC = () => {
   const [hasEditCreditsRemaining, setHasEditCreditsRemaining] = useState<boolean>(false);
 
   const [globalEditUsed, setGlobalEditUsed] = useState<boolean>(false);
-  const [userRole, setUserRole] = useState<string>('user');
+const [userRole, setUserRole] = useState<string>('user');
 
   // ── Keep refs in sync ──────────────────────────────────────────────────────
   useEffect(() => { resumeDataRef.current = resumeData; }, [resumeData]);
@@ -594,7 +571,7 @@ const ResumeBuilder: React.FC = () => {
     const handlePrintAttempt = (): boolean => {
       if (isDownloadingRef.current) return true;
 
-      const currentTemplate = resumeDataRef.current?.template || 'digital-pro';
+      const currentTemplate = resumeDataRef.current?.template || 'geometric-blue';
       const isFreeTemplate = freeTemplates.includes(currentTemplate);
 
       if (isFreeTemplate) {
@@ -658,30 +635,9 @@ const ResumeBuilder: React.FC = () => {
 
   const activeSection = sections[activeSectionIndex];
 
-  const loadCoverLetters = async (): Promise<void> => {
-    setIsLoadingCoverLetters(true);
-    try {
-      const { data } = await api.get('/cover-letters/all', {
-        headers: { Authorization: token }
-      });
-      setCoverLetters(data.coverLetters || []);
-    } catch (error: any) {
-      console.error('Error loading cover letters:', error);
-      setCoverLetters([]);
-    } finally {
-      setIsLoadingCoverLetters(false);
-    }
-  };
+ 
+ 
 
-  const handleCoverLetterIconClick = async (): Promise<void> => {
-    await loadCoverLetters();
-    setShowCoverLetterModal(true);
-  };
-
-  const handleSelectCoverLetter = (coverLetterId: string): void => {
-    setShowCoverLetterModal(false);
-    navigate(`/app/cover-letter/builder/${coverLetterId}`);
-  };
 
   const loadUserAccess = async (): Promise<void> => {
     if (!token) {
@@ -837,8 +793,8 @@ const ResumeBuilder: React.FC = () => {
             languages: r.additional_info?.languages || '',
             interests: r.additional_info?.interests || '',
           },
-          template: r.template || 'digital-pro',
-          accent_color: r.accent_color || '#3B82F6',
+        template: r.template || 'geometric-blue',
+          accent_color: r.accent_color || '#2c2a63',
           public: r.public || false,
           status: r.status || 'draft',
           hasBeenDownloaded: r.hasBeenDownloaded || false,
@@ -1059,9 +1015,9 @@ const ResumeBuilder: React.FC = () => {
     }
   };
 
-  const performDownloadInternal = async (): Promise<void> => {
+const performDownloadInternal = async (): Promise<void> => {
     try {
-      await saveResume().catch(() => { });
+      await saveResume().catch(() => {});
       await new Promise(resolve => setTimeout(resolve, 500));
 
       const style = document.createElement('style');
@@ -1344,346 +1300,378 @@ const handleContinueWithFree = async (): Promise<void> => {
     );
   }
 
-  return (
-    <div className="pb-20 md:pb-0">
-      <div className="hidden lg:flex fixed left-2 top-1/2 -translate-y-1/2 z-30 flex-col gap-8 no-print">
-        <button
-          onClick={() => setShowTemplateModal(true)}
-          className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity group"
-          title="Choose Template"
-        >
-          <FontAwesomeIcon icon={faFileAlt} className="text-3xl text-[#2c2a63] group-hover:scale-110 transition-transform" />
-          <span className="text-[9px] font-bold text-[#2c2a63] whitespace-nowrap">Template</span>
-        </button>
+return (
+    <div className="flex h-screen overflow-hidden bg-white">
+      
+      {/* ── LEFT STATIC SIDEBAR (Template + Color) ── */}
+      <div className="hidden lg:flex flex-col no-print" style={{ width: 280, minWidth: 280, background: '#fff', borderRight: '1px solid #e5e7eb', height: '100vh', overflow: 'hidden' }}>
+        
+        {/* Sidebar Tabs */}
+        <div className="flex border-b border-gray-200" style={{ flexShrink: 0 }}>
+          <button
+            onClick={() => setShowColorPicker(false)}
+            className="flex-1 py-3 text-xs font-bold transition-all"
+            style={{
+              color: !showColorPicker ? '#2c2a63' : '#9ca3af',
+              borderBottom: !showColorPicker ? '2px solid #2c2a63' : '2px solid transparent',
+              background: 'none'
+            }}
+          >
+            <FontAwesomeIcon icon={faFileAlt} className="mr-1.5" />
+            Templates
+          </button>
+          <button
+            onClick={() => setShowColorPicker(true)}
+            className="flex-1 py-3 text-xs font-bold transition-all"
+            style={{
+              color: showColorPicker ? '#2c2a63' : '#9ca3af',
+              borderBottom: showColorPicker ? '2px solid #2c2a63' : '2px solid transparent',
+              background: 'none'
+            }}
+          >
+            <FontAwesomeIcon icon={faPalette} className="mr-1.5" />
+            Accent
+          </button>
+        </div>
 
-        <button
-          onClick={() => setShowColorPicker(true)}
-          className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity group"
-          title="Choose Color"
-        >
-          <FontAwesomeIcon icon={faPalette} className="text-3xl text-[#2c2a63] group-hover:scale-110 transition-transform" />
-          <span className="text-[9px] font-bold text-[#2c2a63] whitespace-nowrap">Accent</span>
-        </button>
-
-       
+        {/* Sidebar Content */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '12px' }}>
+          {!showColorPicker ? (
+            /* Template Panel */
+            <TemplateSelector
+              selectedTemplate={resumeData.template || 'geometric-blue'}
+              onChange={(template: string) => {
+                setResumeData(prev => ({ ...prev, template }));
+              }}
+              onClose={() => {}}
+              inline={true}
+            />
+          ) : (
+            /* Color Panel */
+            <ColorPicker
+              selectedColor={resumeData.accent_color || '#2c2a63'}
+              onChange={(color: string) => {
+                setResumeData(prev => ({ ...prev, accent_color: color }));
+              }}
+              onClose={() => {}}
+              inline={true}
+            />
+          )}
+        </div>
       </div>
 
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30 no-print shadow-lg">
-        <div className="flex justify-around items-center py-3 px-4">
-          <button onClick={() => setShowTemplateModal(true)} className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity active:scale-95">
-            <FontAwesomeIcon icon={faFileAlt} className="text-2xl text-[#2c2a63]" />
-            <span className="text-[10px] font-semibold text-[#2c2a63]">Template</span>
+      {/* ── MOBILE BOTTOM TAB BAR ── */}
+      <div
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-30 no-print flex items-center justify-center"
+        style={{ background: '#fff', borderTop: '1px solid #f0f0f0', boxShadow: '0 -2px 12px rgba(0,0,0,0.06)', height: 60 }}
+      >
+        <div className="flex items-center gap-0" style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid #f0f0f0' }}>
+          <button
+            onClick={() => { setShowTemplateModal(true); setShowColorPicker(false); }}
+            className="flex flex-col items-center gap-1 px-8 py-2.5 transition-all active:scale-95 hover:bg-gray-50 border-r border-gray-100"
+          >
+            <FontAwesomeIcon icon={faFileAlt} className="text-xl" style={{ color: '#2c2a63' }} />
+            <span className="text-[11px] font-bold" style={{ color: '#2c2a63' }}>Template</span>
           </button>
-          <button onClick={() => setShowColorPicker(true)} className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity active:scale-95">
-            <FontAwesomeIcon icon={faPalette} className="text-2xl text-[#2c2a63]" />
-            <span className="text-[10px] font-semibold text-[#2c2a63]">Accent</span>
-          </button>
-          <button onClick={handleCoverLetterIconClick} className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity active:scale-95">
-            <FontAwesomeIcon icon={faEnvelope} className="text-2xl text-[#2c2a63]" />
-            <span className="text-[10px] font-semibold text-[#2c2a63]">Cover Letter</span>
+          <button
+            onClick={() => { setShowTemplateModal(true); setShowColorPicker(true); }}
+            className="flex flex-col items-center gap-1 px-8 py-2.5 transition-all active:scale-95 hover:bg-gray-50"
+          >
+            <FontAwesomeIcon icon={faPalette} className="text-xl" style={{ color: '#2c2a63' }} />
+            <span className="text-[11px] font-bold" style={{ color: '#2c2a63' }}>Accent</span>
           </button>
         </div>
       </div>
 
+      {/* ── MOBILE MODAL (template + color) ── */}
       {showTemplateModal && (
         <>
           <div className="fixed inset-0 bg-black/50 z-40 no-print" onClick={() => setShowTemplateModal(false)} />
-          <div className="no-print">
-            <TemplateSelector
-              selectedTemplate={resumeData.template || 'digital-pro'}
-              onChange={(template: string) => {
-                setResumeData(prev => ({ ...prev, template }));
-                setShowTemplateModal(false);
-              }}
-              onClose={() => setShowTemplateModal(false)}
-            />
+          <div className="fixed bottom-16 left-0 right-0 bg-white z-50 no-print rounded-t-2xl shadow-2xl" style={{ maxHeight: '70vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            {/* Mobile modal tabs */}
+            <div className="flex border-b border-gray-200" style={{ flexShrink: 0 }}>
+              <button
+                onClick={() => setShowColorPicker(false)}
+                className="flex-1 py-3 text-xs font-bold"
+                style={{ color: !showColorPicker ? '#2c2a63' : '#9ca3af', borderBottom: !showColorPicker ? '2px solid #2c2a63' : '2px solid transparent', background: 'none' }}
+              >
+                <FontAwesomeIcon icon={faFileAlt} className="mr-1.5" /> Templates
+              </button>
+              <button
+                onClick={() => setShowColorPicker(true)}
+                className="flex-1 py-3 text-xs font-bold"
+                style={{ color: showColorPicker ? '#2c2a63' : '#9ca3af', borderBottom: showColorPicker ? '2px solid #2c2a63' : '2px solid transparent', background: 'none' }}
+              >
+                <FontAwesomeIcon icon={faPalette} className="mr-1.5" /> Accent
+              </button>
+              <button onClick={() => setShowTemplateModal(false)} className="px-4 text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: 12 }}>
+              {!showColorPicker ? (
+                <TemplateSelector
+                  selectedTemplate={resumeData.template || 'geometric-blue'}
+                  onChange={(template: string) => {
+                    setResumeData(prev => ({ ...prev, template }));
+                    setShowTemplateModal(false);
+                  }}
+                  onClose={() => setShowTemplateModal(false)}
+                  inline={true}
+                />
+              ) : (
+                <ColorPicker
+                  selectedColor={resumeData.accent_color || '#2c2a63'}
+                  onChange={(color: string) => {
+                    setResumeData(prev => ({ ...prev, accent_color: color }));
+                  }}
+                  onClose={() => {}}
+                  inline={true}
+                />
+              )}
+            </div>
           </div>
         </>
       )}
 
-      {showColorPicker && (
-        <>
-          <div className="fixed inset-0 bg-black/30 z-40 no-print" onClick={() => setShowColorPicker(false)} />
-          <div className="fixed left-0 top-0 h-full w-80 bg-white shadow-2xl z-50 no-print">
-            <ColorPicker
-              selectedColor={resumeData.accent_color || '#3B82F6'}
-              onChange={(color: string) => {
-                setResumeData(prev => ({ ...prev, accent_color: color }));
-                setShowColorPicker(false);
-              }}
-              onClose={() => setShowColorPicker(false)}
-            />
+    {/* ── MAIN CONTENT AREA ── */}
+    <div className="flex flex-col flex-1 overflow-hidden pb-16 lg:pb-0">
+        
+        {/* Top bar with back button + action buttons */}
+      <div className="no-print flex items-center justify-between px-4 py-2" style={{ flexShrink: 0, background: 'transparent' }}>
+         <button
+            onClick={() => navigate(isAdminMode
+              ? (userRole === 'admin' ? '/admin/dashboard' : '/sales/ats-checker')
+              : '/UserProfile'
+            )}
+            className='inline-flex gap-2 items-center px-4 py-2 rounded-lg text-sm font-semibold transition-colors hover:opacity-80'
+            style={{ backgroundColor: '#2c2a63', color: '#EDC9AF' }}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+            {isAdminMode
+              ? (userRole === 'admin' ? 'Back to Admin Dashboard' : 'Back to Sales Dashboard')
+              : 'Back to Dashboard'
+            }
+          </button>
+
+          {/* Action buttons */}
+          <div className="flex items-center gap-2">
+          {resumeData.public && (
+              <button
+                onClick={handleShare}
+                className="flex items-center px-3 py-2 gap-1 text-xs rounded-lg transition-colors font-medium hover:opacity-80"
+                style={{ backgroundColor: '#2c2a63', color: '#EDC9AF' }}
+              >
+                <Share2Icon className="size-3" /> Share
+              </button>
+            )}
+            <button
+              onClick={changeResumeVisibility}
+              className='flex items-center px-3 py-2 gap-1 text-xs rounded-lg transition-colors font-medium hover:opacity-80'
+              style={{ backgroundColor: '#EDC9AF', color: '#2c2a63' }}
+            >
+              {resumeData.public ? <EyeIcon className="size-3" /> : <EyeOffIcon className="size-3" />}
+              {resumeData.public ? 'Public' : 'Private'}
+            </button>
+            {isAdminMode && (
+              <button
+                onClick={async () => {
+                  setIsSendingToUser(true);
+                  try {
+                    await saveResume();
+                    await api.put(`/admin/resumes/${resumeId}/publish`);
+                    toast.success(
+                      resumeData.status === 'published'
+                        ? 'Modified changes sent to user!'
+                        : 'Resume sent to user dashboard!',
+                      { duration: 4000 }
+                    );
+                    setResumeData(prev => ({ ...prev, status: 'published' }));
+                  } catch (error: any) {
+                    if (error?.response?.data?.message) {
+                      toast.error(error.response.data.message);
+                    }
+                  } finally {
+                    setIsSendingToUser(false);
+                  }
+                }}
+                disabled={isSendingToUser}
+                className='flex items-center gap-1 px-3 py-2 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:opacity-80'
+                style={{ backgroundColor: '#EDC9AF', color: '#2c2a63' }}
+              >
+                {isSendingToUser ? (
+                  <>
+                    <div className='w-3 h-3 border-2 border-[#2c2a63] border-t-transparent rounded-full animate-spin' />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <svg className='w-3 h-3' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 19l9 2-9-18-9 18 9-2zm0 0v-8' />
+                    </svg>
+                    {(resumeData as any).status === 'published' ? 'Send Modified Changes' : 'Send to User'}
+                  </>
+                )}
+              </button>
+            )}
+            {showDisabledButton ? (
+              <button
+                onClick={handleDisabledButtonClick}
+                className='flex items-center gap-1 px-3 py-2 text-xs rounded-lg transition-colors font-medium hover:opacity-80'
+                style={{ backgroundColor: '#EDC9AF', color: '#2c2a63' }}
+              >
+                <DownloadIcon className='size-3' /> Limit Exceeded - Upgrade
+              </button>
+          ) : (
+              <button
+                onClick={downloadResume}
+                disabled={isDownloading}
+                className='flex items-center gap-1 px-3 py-2 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:opacity-80'
+                style={{ backgroundColor: '#2c2a63', color: '#EDC9AF' }}
+              >
+                <DownloadIcon className='size-3' />
+                {isDownloading ? 'Preparing...' : 'Download'}
+              </button>
+            )}
           </div>
-        </>
-      )}
+        </div>
 
-      {showCoverLetterModal && (
-        <>
-          <div className="fixed inset-0 bg-black/30 z-40 no-print" onClick={() => setShowCoverLetterModal(false)} />
-          <div className="fixed left-0 top-0 h-full w-80 bg-white shadow-2xl z-50 no-print">
-            <CoverLetterSidebar
-              coverLetters={coverLetters}
-              isLoading={isLoadingCoverLetters}
-              onClose={() => setShowCoverLetterModal(false)}
-              onSelect={handleSelectCoverLetter}
-              onCreate={async (title: string) => {
-                try {
-                  const { data } = await api.post('/cover-letters/create',
-                    { title },
-                    { headers: { Authorization: token } }
-                  );
-                  setCoverLetters([...coverLetters, data.coverLetter]);
-                  navigate(`/app/cover-letter/builder/${data.coverLetter._id}`);
-                  toast.success('Cover letter created successfully!');
-                } catch (error: any) {
-                  toast.error(error?.response?.data?.message || 'Failed to create cover letter');
-                }
-              }}
-            />
-          </div>
-        </>
-      )}
+        {/* Main grid */}
+        <div className="flex-1 overflow-y-auto">
+          <div className='max-w-7xl mx-auto px-4 py-6'>
+            <div className='grid lg:grid-cols-12 gap-8'>
+              
+              {/* Left Form Panel */}
+              <div className='relative lg:col-span-5 rounded-lg overflow-hidden no-print'>
+                <div ref={formTopRef} className='bg-white rounded-lg shadow-sm border border-gray-200 p-6 pt-1'>
+                  <hr className="absolute top-0 left-0 right-0 border-2 border-gray-200" />
+                  <hr
+                    className="absolute top-0 left-0 h-1 bg-gradient-to-r from-[#2c2a63] to-[#2c2a63] border-none transition-all duration-2000"
+                    style={{ width: `${activeSectionIndex * 100 / (sections.length - 1)}%` }}
+                  />
 
-      <div className="max-w-7xl mx-auto px-4 py-6 no-print">
-        <button
-          onClick={() => navigate(isAdminMode
-            ? (userRole === 'admin' ? '/admin/dashboard' : '/sales/ats-checker')
-            : '/UserProfile'
-          )}
-          className='inline-flex gap-2 items-center px-4 py-2 rounded-lg text-sm font-semibold transition-colors'
-          style={{ backgroundColor: '#2c2a63', color: '#EDC9AF' }}
-        >
-          <FontAwesomeIcon icon={faArrowLeft} />
-          {isAdminMode
-            ? (userRole === 'admin' ? 'Back to Admin Dashboard' : 'Back to Sales Dashboard')
-            : 'Back to Dashboard'
-          }
-        </button>
-      </div>
+                  <div className="mt-4">
+                    <ProgressBar resumeData={resumeData} />
+                  </div>
 
-      <div className='max-w-7xl mx-auto px-4 pb-8'>
-        <div className='grid lg:grid-cols-12 gap-8'>
-          {/* Left Panel */}
-          <div className='relative lg:col-span-5 rounded-lg overflow-hidden no-print'>
-            <div ref={formTopRef} className='bg-white rounded-lg shadow-sm border border-gray-200 p-6 pt-1'>
-              <hr className="absolute top-0 left-0 right-0 border-2 border-gray-200" />
-              <hr
-                className="absolute top-0 left-0 h-1 bg-gradient-to-r from-[#2c2a63] to-[#2c2a63] border-none transition-all duration-2000"
-                style={{ width: `${activeSectionIndex * 100 / (sections.length - 1)}%` }}
-              />
+                  <div className="flex justify-between items-center mb-6 border-b border-gray-300 pb-3 mt-4">
+                    <div className='flex items-center gap-3'>
+                      {activeSectionIndex !== 0 && (
+                        <button
+                          onClick={() => setActiveSectionIndex(prev => Math.max(prev - 1, 0))}
+                          className='flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium text-[#2c2a63] bg-[#EDC9AF] hover:bg-[#e0b89f] transition-all'
+                        >
+                          <ChevronLeft className="size-4" /> Previous
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setActiveSectionIndex(prev => Math.min(prev + 1, sections.length - 1))}
+                        disabled={activeSectionIndex === sections.length - 1}
+                        className='flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium text-[#EDC9AF] bg-[#2c2a63] hover:bg-[#1f1d4a] transition-all disabled:opacity-50 disabled:cursor-not-allowed'
+                      >
+                        Next <ChevronRight className="size-4" />
+                      </button>
+                    </div>
+                  </div>
 
-              <div className="mt-4">
-                <ProgressBar resumeData={resumeData} />
-              </div>
+                  <div className='space-y-6'>
+                    {activeSection.id === 'personal' && (
+                      <PersonalInfoForm
+                        key={`personal-${personalInfoLocked}-${globalEditUsed}-${resumeData.hasBeenDownloaded}`}
+                        data={resumeData.personal_info || {}}
+                        onChange={(data: PersonalInfo) => {
+                          setResumeData(prev => ({ ...prev, personal_info: data }));
+                        }}
+                        removeBackground={removeBackground}
+                        setRemoveBackground={setRemoveBackground}
+                        personalInfoLocked={
+                          resumeData.hasBeenDownloaded
+                            ? (personalInfoLocked || globalEditUsed)
+                            : false
+                        }
+                        globalEditUsed={
+                          resumeData.hasBeenDownloaded
+                            ? globalEditUsed
+                            : false
+                        }
+                      />
+                    )}
+                    {activeSection.id === 'summary' && (
+                      <ProfessionalSummaryForm
+                        data={resumeData.professional_summary || ''}
+                        onChange={(data: string) =>
+                          setResumeData(prev => ({ ...prev, professional_summary: data }))
+                        }
+                        setResumeData={setResumeData}
+                      />
+                    )}
+                    {activeSection.id === 'experience' && (
+                      <ExperienceForm
+                        data={resumeData.experience || []}
+                        onChange={(data: Experience[]) =>
+                          setResumeData(prev => ({ ...prev, experience: data }))
+                        }
+                      />
+                    )}
+                    {activeSection.id === 'education' && (
+                      <EducationForm
+                        data={resumeData.education || []}
+                        onChange={(data: Education[]) =>
+                          setResumeData(prev => ({ ...prev, education: data }))
+                        }
+                      />
+                    )}
+                    {activeSection.id === 'projects' && (
+                      <ProjectForm
+                        data={resumeData.projects || []}
+                        onChange={(data: Project[]) =>
+                          setResumeData(prev => ({ ...prev, projects: data }))
+                        }
+                      />
+                    )}
+                    {activeSection.id === 'skills' && (
+                      <SkillsForm
+                        data={resumeData.skills || []}
+                        onChange={(data: string[]) =>
+                          setResumeData(prev => ({ ...prev, skills: data }))
+                        }
+                      />
+                    )}
+                    {activeSection.id === 'additional' && (
+                      <AdditionalInfoForm
+                        data={resumeData.additional_info || {}}
+                        onChange={(data: AdditionalInfo) =>
+                          setResumeData(prev => ({ ...prev, additional_info: data }))
+                        }
+                      />
+                    )}
+                  </div>
 
-              <div className="flex justify-between items-center mb-6 border-b border-gray-300 pb-3 mt-4">
-                <div className='flex items-center gap-3'>
-                  {activeSectionIndex !== 0 && (
-                    <button
-                      onClick={() => setActiveSectionIndex(prev => Math.max(prev - 1, 0))}
-                      className='flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium text-[#2c2a63] bg-[#EDC9AF] hover:bg-[#e0b89f] transition-all'
-                    >
-                      <ChevronLeft className="size-4" /> Previous
-                    </button>
-                  )}
                   <button
-                    onClick={() => setActiveSectionIndex(prev => Math.min(prev + 1, sections.length - 1))}
-                    disabled={activeSectionIndex === sections.length - 1}
-                    className='flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium text-[#EDC9AF] bg-[#2c2a63] hover:bg-[#1f1d4a] transition-all disabled:opacity-50 disabled:cursor-not-allowed'
+                    onClick={() => { saveResume().catch(() => { }); }}
+                    className='bg-[#2c2a63] text-[#EDC9AF] hover:bg-[#1f1d4a] transition-all rounded-md px-6 py-2 mt-6 text-sm font-medium'
                   >
-                    Next <ChevronRight className="size-4" />
+                    Save Changes
                   </button>
                 </div>
               </div>
 
-              <div className='space-y-6'>
-                {activeSection.id === 'personal' && (
-                  <PersonalInfoForm
-                    key={`personal-${personalInfoLocked}-${globalEditUsed}-${resumeData.hasBeenDownloaded}`}
-                    data={resumeData.personal_info || {}}
-                    onChange={(data: PersonalInfo) => {
-                      setResumeData(prev => ({ ...prev, personal_info: data }));
-                    }}
-                    removeBackground={removeBackground}
-                    setRemoveBackground={setRemoveBackground}
-                    personalInfoLocked={
-                      resumeData.hasBeenDownloaded
-                        ? (personalInfoLocked || globalEditUsed)
-                        : false
-                    }
-                    globalEditUsed={
-                      resumeData.hasBeenDownloaded
-                        ? globalEditUsed
-                        : false
-                    }
+{/* Right Resume Preview */}
+              <div className='lg:col-span-7 max-lg:mt-6'>
+                <div className='resume-preview'>
+                  <ResumePreview
+                    data={resumeData}
+                    template={resumeData.template || 'geometric-blue'}
+                    accentColor={resumeData.accent_color || '#2c2a63'}
                   />
-                )}
-                {activeSection.id === 'summary' && (
-                  <ProfessionalSummaryForm
-                    data={resumeData.professional_summary || ''}
-                    onChange={(data: string) =>
-                      setResumeData(prev => ({ ...prev, professional_summary: data }))
-                    }
-                    setResumeData={setResumeData}
-                  />
-                )}
-                {activeSection.id === 'experience' && (
-                  <ExperienceForm
-                    data={resumeData.experience || []}
-                    onChange={(data: Experience[]) =>
-                      setResumeData(prev => ({ ...prev, experience: data }))
-                    }
-                  />
-                )}
-                {activeSection.id === 'education' && (
-                  <EducationForm
-                    data={resumeData.education || []}
-                    onChange={(data: Education[]) =>
-                      setResumeData(prev => ({ ...prev, education: data }))
-                    }
-                  />
-                )}
-                {activeSection.id === 'projects' && (
-                  <ProjectForm
-                    data={resumeData.projects || []}
-                    onChange={(data: Project[]) =>
-                      setResumeData(prev => ({ ...prev, projects: data }))
-                    }
-                  />
-                )}
-                {activeSection.id === 'skills' && (
-                  <SkillsForm
-                    data={resumeData.skills || []}
-                    onChange={(data: string[]) =>
-                      setResumeData(prev => ({ ...prev, skills: data }))
-                    }
-                  />
-                )}
-                {activeSection.id === 'additional' && (
-                  <AdditionalInfoForm
-                    data={resumeData.additional_info || {}}
-                    onChange={(data: AdditionalInfo) =>
-                      setResumeData(prev => ({ ...prev, additional_info: data }))
-                    }
-                  />
-                )}
+                </div>
               </div>
 
-              <button
-                onClick={() => { saveResume().catch(() => { }); }}
-                className='bg-[#2c2a63] text-[#EDC9AF] hover:bg-[#1f1d4a] transition-all rounded-md px-6 py-2 mt-6 text-sm font-medium'
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-
-          <div className='lg:col-span-7 max-lg:mt-6'>
-            <div className='relative w-full no-print'>
-
-        <div className='absolute bottom-3 left-0 right-0 flex items-center justify-end gap-1 z-10 flex-wrap px-1'>
-          
-
-                {resumeData.public && (
-              <button
-                    onClick={handleShare}
-                    className="flex items-center p-1.5 px-2 gap-1 text-[10px] rounded-lg ring-blue-300 hover:ring transition-colors"
-                    style={{ backgroundColor: '#2c2a63', color: '#EDC9AF' }}
-                  >
-                    <Share2Icon className="size-3" /> Share
-                  </button>
-                )}
-
-            <button
-                  onClick={changeResumeVisibility}
-                  className='flex items-center p-1.5 px-2 gap-1 text-[10px] bg-[#EDC9AF] text-[#2c2a63] rounded-lg hover:bg-[#e0b89f] transition-colors font-medium'
-                >
-                  {resumeData.public ? <EyeIcon className="size-3" /> : <EyeOffIcon className="size-3" />}
-                  {resumeData.public ? 'Public' : 'Private'}
-                </button>
-
-                {isAdminMode && (
-                  <button
-                    onClick={async () => {
-                      setIsSendingToUser(true);
-                      try {
-                        await saveResume();
-                        await api.put(`/admin/resumes/${resumeId}/publish`);
-                        toast.success(
-                          resumeData.status === 'published'
-                            ? ' Modified changes sent to user!'
-                            : ' Resume sent to user dashboard!',
-                          { duration: 4000 }
-                        );
-                        setResumeData(prev => ({ ...prev, status: 'published' }));
-                      } catch (error: any) {
-                        if (error?.response?.data?.message) {
-                          toast.error(error.response.data.message);
-                        }
-                      } finally {
-                        setIsSendingToUser(false);
-                      }
-                    }}
-                    disabled={isSendingToUser}
-                  className='flex items-center gap-1 px-2 py-1.5 text-[10px] rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium'
-                    style={{ backgroundColor: '#EDC9AF', color: '#2c2a63' }}
-                  >
-                    {isSendingToUser ? (
-                      <>
-                        <div className='w-4 h-4 border-2 border-[#2c2a63] border-t-transparent rounded-full animate-spin' />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                          <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 19l9 2-9-18-9 18 9-2zm0 0v-8' />
-                        </svg>
-                        {(resumeData as any).status === 'published' ? 'Send Modified Changes' : 'Send to User'}
-                      </>
-                    )}
-                  </button>
-                )}
-
-                {showDisabledButton ? (
-           <button
-
-                    onClick={handleDisabledButtonClick}
-
-                    className='flex items-center gap-1 px-2 py-1.5 text-[10px] bg-[#2c2a63] text-[#EDC9AF] rounded-lg hover:bg-[#1f1d4a] transition-colors font-medium'
-
-                  >
-
-                    <DownloadIcon className='size-3' />
-
-                    Limit Exceeded - Upgrade
-
-                  </button>
-                ) : (
-     <button
-                    onClick={downloadResume}
-                    disabled={isDownloading}
-                    className='flex items-center gap-1 px-2 py-1.5 text-[10px] bg-[#2c2a63] text-[#EDC9AF] rounded-lg hover:bg-[#1f1d4a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium'
-                  >
-                    <DownloadIcon className='size-3' />
-                    {isDownloading ? 'Preparing...' : 'Download'}
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className='resume-preview'>
-              <ResumePreview
-                data={resumeData}
-                template={resumeData.template || 'digital-pro'}
-                accentColor={resumeData.accent_color || '#3B82F6'}
-              />
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Download Unlock Modal ── */}
-    <DownloadUnlockModal
+      {/* ── ALL MODALS (unchanged) ── */}
+      <DownloadUnlockModal
         isOpen={showDownloadUnlockModal}
         onClose={() => setShowDownloadUnlockModal(false)}
         onUnlockPlan={handleUnlockPlan}
@@ -1693,84 +1681,39 @@ const handleContinueWithFree = async (): Promise<void> => {
         onContinueWithFree={handleContinueWithFree}
       />
 
-      {/* Personal Info Limit Modal */}
       {showPersonalInfoLimitModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 no-print">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
-            <button
-              onClick={() => setShowPersonalInfoLimitModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+            <button onClick={() => setShowPersonalInfoLimitModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             <div className="text-center mb-6">
               <div className="mx-auto w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+                <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Personal Info Edit Limit Reached</h3>
-              <p className="text-gray-600 mb-4">
-                You've reached your <span className="font-semibold text-[#2c2a63]">{userPlan}</span> plan limit with 1 personal info edit chance.
-              </p>
-              <p className="text-sm text-gray-500 mb-6">
-                ✅ You can still edit: Experience, Education, Skills, Projects, and Additional Info freely.
-              </p>
+              <p className="text-gray-600 mb-4">You've reached your <span className="font-semibold text-[#2c2a63]">{userPlan}</span> plan limit.</p>
+              <p className="text-sm text-gray-500 mb-6">✅ You can still edit: Experience, Education, Skills, Projects, and Additional Info freely.</p>
             </div>
             <div className="space-y-3">
-              <button
-                onClick={() => {
-                  setShowPersonalInfoLimitModal(false);
-                  setShowDownloadUnlockModal(true);
-                }}
-                className="w-full bg-gradient-to-r from-[#2c2a63] to-[#1f1d4a] text-[#EDC9AF] py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all"
-              >
-                Upgrade Plan
-              </button>
-              <button
-                onClick={() => setShowPersonalInfoLimitModal(false)}
-                className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-200 transition-all"
-              >
-                Continue Editing Other Sections
-              </button>
+              <button onClick={() => { setShowPersonalInfoLimitModal(false); setShowDownloadUnlockModal(true); }} className="w-full bg-gradient-to-r from-[#2c2a63] to-[#1f1d4a] text-[#EDC9AF] py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all">Upgrade Plan</button>
+              <button onClick={() => setShowPersonalInfoLimitModal(false)} className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-200 transition-all">Continue Editing Other Sections</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Premium Print Block Modal */}
       {showPremiumModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm no-print">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-8 relative">
             <div className="flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 mx-auto mb-5">
-              <svg className="w-8 h-8 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-              </svg>
+              <svg className="w-8 h-8 text-yellow-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" /></svg>
             </div>
-            <h2 className="text-2xl font-bold text-center text-[#2c2a63] mb-2">
-              Premium Template
-            </h2>
-            <p className="text-center text-gray-500 text-sm mb-6 leading-relaxed">
-              To download this resume, please use the <span className="font-semibold text-[#2c2a63]">Download button</span> or upgrade your plan.
-            </p>
+            <h2 className="text-2xl font-bold text-center text-[#2c2a63] mb-2">Premium Template</h2>
+            <p className="text-center text-gray-500 text-sm mb-6 leading-relaxed">To download this resume, please use the <span className="font-semibold text-[#2c2a63]">Download button</span> or upgrade your plan.</p>
             <div className="flex flex-col gap-3">
-              <button
-                onClick={() => {
-                  setShowPremiumModal(false);
-                  setShowDownloadUnlockModal(true);
-                }}
-                className="w-full py-3 rounded-xl font-semibold text-[#EDC9AF] bg-[#2c2a63] hover:bg-[#1f1d4a] transition-all shadow-md"
-              >
-                Upgrade Plan
-              </button>
-              <button
-                onClick={() => setShowPremiumModal(false)}
-                className="w-full py-3 rounded-xl font-semibold text-[#2c2a63] border-2 border-[#2c2a63] hover:bg-[#2c2a63] hover:text-[#EDC9AF] transition-all"
-              >
-                Close
-              </button>
+              <button onClick={() => { setShowPremiumModal(false); setShowDownloadUnlockModal(true); }} className="w-full py-3 rounded-xl font-semibold text-[#EDC9AF] bg-[#2c2a63] hover:bg-[#1f1d4a] transition-all shadow-md">Upgrade Plan</button>
+              <button onClick={() => setShowPremiumModal(false)} className="w-full py-3 rounded-xl font-semibold text-[#2c2a63] border-2 border-[#2c2a63] hover:bg-[#2c2a63] hover:text-[#EDC9AF] transition-all">Close</button>
             </div>
           </div>
         </div>
@@ -1796,6 +1739,6 @@ const handleContinueWithFree = async (): Promise<void> => {
       />
     </div>
   );
-};
+  };
 
 export default ResumeBuilder;

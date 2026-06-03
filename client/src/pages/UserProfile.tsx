@@ -12,13 +12,20 @@ interface AuthState { user: UserType | null; token: string | null; }
 interface RootState { auth: AuthState; }
 interface Resume { _id: string; title: string; updatedAt: string; template?: string; accent_color?: string; adminCreated?: boolean; }
 interface CoverLetter { _id: string; title: string; updatedAt: string; header_color?: string; }
+
+
 interface UserData {
   plan: string; planExpiresAt?: string; linkedinOptimizationCount?: number;
   linkedinPaid?: boolean; role?: string; downloadCount?: number; downloadLimit?: number;
   name?: string; email?: string; mobile?: string;
   atsScore?: number | null;
   linkedinScore?: number | null;
+  jdEnhancementCount?: number;
+  jdEnhancementLimit?: number;
+  resumeUploadCount?: number;
+  resumeUploadLimit?: number;
 }
+
 interface Ebook {
   _id: string; title: string; description: string; coverImage: string;
   pdfUrl: string; fileSize: string; isFree: boolean; color: string;
@@ -204,6 +211,27 @@ const getUpgradeAdPlan = (p: string) => {
 const scoreColor = (s: number) => s >= 70 ? '#10b981' : s >= 50 ? '#f59e0b' : s >= 30 ? '#fb923c' : '#ef4444';
 const scoreLabel = (s: number) => s >= 70 ? 'Excellent' : s >= 60 ? 'Good' : s >= 45 ? 'Average' : s >= 30 ? 'Below Average' : 'Needs Improvement';
 
+
+
+// ─── Job Description Samples ──────────────────────────────────────────────────
+const jobDescriptionSamples: { id: string; title: string; category: string; description: string }[] = [
+  { id: 'full-stack-developer', title: 'Full Stack Developer', category: 'Technology', description: `We are seeking a Full Stack Developer with strong expertise in designing, developing, and maintaining scalable web applications.\n\nKey Responsibilities:\n- Develop end-to-end web applications using modern frontend and backend frameworks\n- Design and implement RESTful and GraphQL APIs\n- Build scalable backend services and integrate third-party APIs\n\nSkills & Keywords:\nJavaScript, TypeScript, React, Angular, Node.js, Java, Python, REST API, GraphQL, SQL, NoSQL, MongoDB, PostgreSQL, MySQL, Microservices, Cloud (AWS/Azure/GCP), CI/CD, Docker, Git, Agile, SDLC` },
+  { id: 'react-developer', title: 'React Developer', category: 'Technology', description: `We are looking for a React Developer responsible for building high-performance, responsive user interfaces using React.js.\n\nSkills & Keywords:\nReact.js, JavaScript (ES6+), TypeScript, Redux, Context API, HTML5, CSS3, Tailwind, Material UI, REST APIs, Webpack, Vite, Git, Agile, Jest, Frontend Optimization` },
+  { id: 'python-developer', title: 'Python Developer', category: 'Technology', description: `We are seeking a Python Developer to build robust backend systems, automation scripts, and data-driven applications.\n\nSkills & Keywords:\nPython, Django, Flask, FastAPI, REST APIs, Microservices, SQL, PostgreSQL, MySQL, MongoDB, Data Structures, Algorithms, AWS, Docker, CI/CD, Unit Testing, Agile` },
+  { id: 'java-developer', title: 'Java Developer', category: 'Technology', description: `We are hiring a Java Developer to design and develop enterprise-grade applications.\n\nSkills & Keywords:\nJava, Spring Boot, Spring MVC, Hibernate, JPA, RESTful APIs, Microservices, SQL, Oracle, MySQL, Kafka, Docker, Kubernetes, AWS, CI/CD, Agile, SDLC` },
+  { id: 'nodejs-developer', title: 'Node.js Developer', category: 'Technology', description: `We are looking for a Node.js Developer to build scalable server-side applications and APIs.\n\nSkills & Keywords:\nNode.js, Express.js, JavaScript, TypeScript, REST APIs, GraphQL, MongoDB, PostgreSQL, Redis, Microservices, JWT, OAuth, AWS, Docker, CI/CD, Agile` },
+  { id: 'data-scientist', title: 'Data Scientist', category: 'Data & AI', description: `We are seeking a Data Scientist to analyze large datasets, build predictive models, and deliver actionable business insights.\n\nSkills & Keywords:\nPython, R, SQL, Machine Learning, Statistical Analysis, Data Visualization, Pandas, NumPy, Scikit-learn, TensorFlow, Power BI, Tableau, Big Data, AWS, Data Mining` },
+  { id: 'devops-engineer', title: 'DevOps Engineer', category: 'Infrastructure', description: `We are seeking a DevOps Engineer to automate infrastructure, CI/CD pipelines, and deployment processes.\n\nSkills & Keywords:\nDevOps, CI/CD, Jenkins, GitHub Actions, Docker, Kubernetes, Terraform, AWS, Azure, Linux, Monitoring, Cloud Security, Automation, Agile` },
+  { id: 'ui-ux-designer', title: 'UI/UX Designer', category: 'Design', description: `We are seeking a UI/UX Designer to create intuitive, user-centric digital experiences.\n\nSkills & Keywords:\nUI/UX Design, Figma, Adobe XD, Wireframing, Prototyping, User Research, Usability Testing, Design Systems, Accessibility, Responsive Design` },
+  { id: 'product-manager', title: 'Product Manager', category: 'Product', description: `We are hiring a Product Manager to define product vision, roadmap, and delivery strategy.\n\nSkills & Keywords:\nProduct Management, Roadmap Planning, Stakeholder Management, Agile, Scrum, User Stories, Market Research, KPI, OKRs, Data-Driven Decision Making` },
+  { id: 'frontend-developer', title: 'Frontend Developer', category: 'Technology', description: `We are seeking a Frontend Developer to design and develop responsive, high-performance user interfaces.\n\nSkills & Keywords:\nHTML5, CSS3, JavaScript (ES6+), React, Angular, Vue.js, Responsive Design, REST APIs, Web Performance Optimization, Cross-Browser Compatibility, Git, Agile` },
+  { id: 'backend-developer', title: 'Backend Developer', category: 'Technology', description: `We are hiring a Backend Developer to build scalable, secure, and high-performance server-side applications.\n\nSkills & Keywords:\nJava, Python, Node.js, Spring Boot, Django, REST APIs, GraphQL, Microservices, SQL, NoSQL, PostgreSQL, MySQL, MongoDB, Cloud (AWS/Azure/GCP), Docker, CI/CD, Agile` },
+  { id: 'qa-engineer', title: 'QA Engineer', category: 'Quality', description: `We are seeking a QA Engineer to ensure the quality, reliability, and performance of software applications.\n\nSkills & Keywords:\nSoftware Testing, Manual Testing, Automation Testing, Selenium, API Testing, TestNG, JUnit, Regression Testing, Bug Tracking, SDLC, Agile, CI/CD, Quality Assurance` },
+  { id: 'business-analyst', title: 'Business Analyst', category: 'Business', description: `We are looking for a Business Analyst to bridge the gap between business stakeholders and technical teams.\n\nSkills & Keywords:\nBusiness Analysis, Requirement Gathering, BRD, FRD, User Stories, Stakeholder Management, Process Mapping, SQL, Data Analysis, Agile, Scrum, UAT, Documentation` },
+  { id: 'financial-analyst', title: 'Financial Analyst', category: 'Finance', description: `We are hiring a Financial Analyst to support financial planning, analysis, and decision-making.\n\nSkills & Keywords:\nFinancial Analysis, Budgeting, Forecasting, Financial Modeling, Advanced Excel, Power BI, Tableau, KPI Analysis, Risk Assessment, Business Intelligence, Accounting Principles, Strategic Planning` },
+];
+
+
 // ─── Admin / Sales Profile ────────────────────────────────────────────────────
 type AdminSection = 'profile' | 'dashboard' | 'billing' | 'delete-account';
 
@@ -268,7 +296,7 @@ const SimpleProfile: React.FC<{ user: UserType; onLogout: () => void }> = ({ use
 
   const handleDashboardNav = () => {
     if (user?.role === 'admin') {
-      navigate('/admin/dashboard');
+      navigate('/admin');
     } else if (user?.role === 'sales') {
       navigate('/sales/ats-checker');
     }
@@ -639,6 +667,18 @@ const UserProfile: React.FC = () => {
   const [showUploadResumeModal, setShowUploadResumeModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+
+const [uploadJobDescription, setUploadJobDescription] = useState('');
+const [uploadSelectedJobRole, setUploadSelectedJobRole] = useState('');
+const [uploadDropdownOpen, setUploadDropdownOpen] = useState(false);
+const uploadDropdownRef = useRef<HTMLDivElement>(null);
+
+// NEW: upload mode state
+const [uploadMode, setUploadMode] = useState<'choose' | 'new' | 'existing'>('choose');
+const [selectedExistingResumeId, setSelectedExistingResumeId] = useState('');
+const [existingResumes, setExistingResumes] = useState<Resume[]>([]);
+const [loadingExistingResumes, setLoadingExistingResumes] = useState(false);
+
   const [newResumeTitle, setNewResumeTitle] = useState('');
   const [newCoverLetterTitle, setNewCoverLetterTitle] = useState('');
 
@@ -655,6 +695,7 @@ const UserProfile: React.FC = () => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [showJdUpgradeModal, setShowJdUpgradeModal] = useState(false);
 
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [showCurrentPwd, setShowCurrentPwd] = useState(false);
@@ -712,6 +753,16 @@ const UserProfile: React.FC = () => {
     } catch { }
     finally { setLoadingData(false); }
   };
+
+
+  useEffect(() => {
+    const h = (e: MouseEvent) => {
+      if (uploadDropdownRef.current && !uploadDropdownRef.current.contains(e.target as Node))
+        setUploadDropdownOpen(false);
+    };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
 
   useEffect(() => {
     const h = (e: MouseEvent) => {
@@ -821,7 +872,208 @@ const UserProfile: React.FC = () => {
     finally { setDeletingAccount(false); }
   };
 
-  const handleEbookOpen = (ebook: Ebook) => {
+
+// ── Load existing resumes for "continue with existing" flow ──
+const loadExistingResumes = async () => {
+  setLoadingExistingResumes(true);
+  try {
+    const { data } = await api.get('/ai/uploaded-resumes');
+    setExistingResumes(data.resumes || []);
+  } catch { }
+  finally { setLoadingExistingResumes(false); }
+};
+
+// ── Existing resume picker UI ──
+const renderExistingResumePicker = () => (
+  <div style={{ marginBottom: 14 }}>
+    <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
+      Select an existing resume
+    </label>
+    {loadingExistingResumes ? (
+      <div style={{ textAlign: 'center', padding: 16 }}>
+        <i className="fa-solid fa-spinner fa-spin" style={{ color: BRAND }} />
+      </div>
+    ) : existingResumes.length === 0 ? (
+      <div style={{ padding: '12px 14px', background: '#f9fafb', borderRadius: 10, border: '1px solid #e5e7eb', fontSize: 13, color: '#9ca3af', textAlign: 'center' }}>
+        No uploaded resumes found
+      </div>
+    ) : (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 200, overflowY: 'auto' }}>
+        {existingResumes.map(r => (
+          <button key={r._id} onClick={() => setSelectedExistingResumeId(r._id)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px',
+              borderRadius: 10, border: `1.5px solid ${selectedExistingResumeId === r._id ? BRAND : '#e5e7eb'}`,
+              background: selectedExistingResumeId === r._id ? SAND_LIGHT : '#fff',
+              cursor: 'pointer', textAlign: 'left'
+            }}>
+            <div style={{ width: 34, height: 34, borderRadius: 8, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <i className="fa-solid fa-file-lines" style={{ fontSize: 14, color: SAND }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: BRAND, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</p>
+              <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>
+                Updated {new Date(r.updatedAt).toLocaleDateString('en-IN')}
+              </p>
+            </div>
+            {selectedExistingResumeId === r._id && (
+              <i className="fa-solid fa-circle-check" style={{ fontSize: 16, color: BRAND, flexShrink: 0 }} />
+            )}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+);
+
+// ── Bottom form: title + JD + submit ──
+const renderBottomForm = (isNew: boolean) => {
+  const uploadSlotsUsed = userData?.resumeUploadCount ?? 0;
+  const uploadSlotsTotal = userData?.resumeUploadLimit ?? 0;
+  const uploadSlotsLeft = Math.max(0, uploadSlotsTotal - uploadSlotsUsed);
+  const jdUsed = userData?.jdEnhancementCount ?? 0;
+  const jdTotal = userData?.jdEnhancementLimit ?? 0;
+  const jdLeft = Math.max(0, jdTotal - jdUsed);
+
+  return (
+    <>
+      {/* Resume Title */}
+      <input
+        type="text"
+        placeholder="Enter resume title"
+        value={newResumeTitle}
+        onChange={e => setNewResumeTitle(e.target.value)}
+        style={{ width: '100%', padding: '11px 14px', borderRadius: 10, fontSize: 14, border: `1.5px solid ${SAND}`, outline: 'none', marginBottom: 14, boxSizing: 'border-box' }}
+      />
+
+      {/* File upload — only for new uploads */}
+      {isNew && (
+        <>
+          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
+            Select resume file <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 400 }}>(uses 1 upload slot — {uploadSlotsLeft} left)</span>
+          </label>
+          <label htmlFor="upload-resume-input-main"
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, border: `2px dashed ${SAND}`, borderRadius: 12, padding: '20px 16px', cursor: 'pointer', marginBottom: 14, background: '#fafafa' }}>
+            {uploadFile
+              ? <p style={{ fontSize: 13, fontWeight: 600, color: BRAND, margin: 0, textAlign: 'center', wordBreak: 'break-all' }}>{uploadFile.name}</p>
+              : <>
+                <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: 28, color: SAND }} />
+                <p style={{ fontSize: 13, color: '#9ca3af', margin: 0 }}>Upload resume (PDF only)</p>
+              </>}
+            <input id="upload-resume-input-main" type="file" accept=".pdf" hidden
+              onChange={e => { const f = e.target.files?.[0]; if (f) setUploadFile(f); }} />
+          </label>
+        </>
+      )}
+
+      {/* JD section */}
+      <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 4 }}>
+        Job Description{' '}
+        {isNew
+          ? <span style={{ background: '#f3f4f6', color: '#6b7280', padding: '2px 8px', borderRadius: 8, fontSize: 10, fontWeight: 700, marginLeft: 4 }}>OPTIONAL — uses 1 JD credit ({jdLeft} left)</span>
+          : <span style={{ background: BRAND, color: SAND, padding: '2px 8px', borderRadius: 8, fontSize: 10, fontWeight: 700, marginLeft: 4 }}>REQUIRED — uses 1 JD credit ({jdLeft} left)</span>
+        }
+      </label>
+      <p style={{ fontSize: 11, color: '#9ca3af', margin: '0 0 10px', fontStyle: 'italic' }}>
+        {isNew ? 'Add a job description to tailor your resume to the role' : 'Enter a job description to enhance your existing resume'}
+      </p>
+
+      {/* JD Dropdown */}
+      <div ref={uploadDropdownRef} style={{ position: 'relative', marginBottom: 10 }}>
+        <div onClick={() => setUploadDropdownOpen(o => !o)}
+          style={{ width: '100%', padding: '11px 14px', fontSize: 14, fontWeight: 600, color: uploadSelectedJobRole ? '#10b981' : BRAND, background: '#fff', border: uploadSelectedJobRole ? '2px solid #10b981' : `2px solid ${BRAND}`, borderRadius: 10, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxSizing: 'border-box' }}>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13 }}>
+            {uploadSelectedJobRole || 'Pick a job role (optional)…'}
+          </span>
+          <i className={`fas fa-chevron-${uploadDropdownOpen ? 'up' : 'down'}`} style={{ color: uploadSelectedJobRole ? '#10b981' : BRAND, fontSize: 12, flexShrink: 0, marginLeft: 8 }} />
+        </div>
+        {uploadDropdownOpen && (
+          <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, background: '#fff', border: `2px solid ${BRAND}`, borderRadius: 10, boxShadow: '0 8px 20px rgba(44,42,99,0.2)', maxHeight: 220, overflowY: 'auto', zIndex: 9999 }}>
+            {jobDescriptionSamples.map(sample => (
+              <div key={sample.id}
+                onClick={() => { setUploadJobDescription(sample.description); setUploadSelectedJobRole(sample.title); setUploadDropdownOpen(false); }}
+                style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0', fontSize: 13, fontWeight: 600, color: BRAND }}
+                onMouseOver={e => (e.currentTarget as HTMLDivElement).style.background = '#f0f9ff'}
+                onMouseOut={e => (e.currentTarget as HTMLDivElement).style.background = '#fff'}>
+                {sample.title} <span style={{ color: '#64748b', fontSize: 11, fontWeight: 500 }}>({sample.category})</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {uploadSelectedJobRole && uploadSelectedJobRole !== 'Custom Job Description' && (
+        <div style={{ marginBottom: 10, padding: '7px 12px', background: '#dcfce7', border: '1px solid #10b981', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#059669', fontWeight: 600 }}>
+          <i className="fas fa-check-circle" style={{ color: '#10b981', flexShrink: 0 }} />
+          <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{uploadSelectedJobRole} selected</span>
+          <button onClick={() => { setUploadSelectedJobRole(''); setUploadJobDescription(''); }}
+            style={{ background: 'transparent', border: 'none', color: '#059669', cursor: 'pointer', fontSize: 14, flexShrink: 0 }}>
+            <i className="fas fa-times" />
+          </button>
+        </div>
+      )}
+
+      <textarea
+        value={uploadJobDescription}
+        onChange={e => { setUploadJobDescription(e.target.value); if (e.target.value && !uploadSelectedJobRole) setUploadSelectedJobRole('Custom Job Description'); else if (!e.target.value) setUploadSelectedJobRole(''); }}
+        placeholder="Or paste a custom job description here…"
+        style={{ width: '100%', minHeight: 100, padding: '11px 14px', border: uploadJobDescription.trim() ? '2px solid #10b981' : '1.5px solid #e2e8f0', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', resize: 'vertical', outline: 'none', boxSizing: 'border-box', marginBottom: 16 }}
+        onFocus={e => e.currentTarget.style.borderColor = BRAND}
+        onBlur={e => e.currentTarget.style.borderColor = uploadJobDescription.trim() ? '#10b981' : '#e2e8f0'}
+      />
+
+      {/* Submit button */}
+      <button
+    disabled={isUploading}
+        onClick={async () => {
+          if (!newResumeTitle.trim()) { toast.error('Enter a title'); return; }
+          if (isNew && !uploadFile) { toast.error('Select a PDF file'); return; }
+          if (!isNew && !selectedExistingResumeId) { toast.error('Select an existing resume'); return; }
+        if (!isNew && !uploadJobDescription.trim()) { toast.error('Enter a job description'); return; }
+if (uploadJobDescription.trim() && jdLeft === 0) { setShowJdUpgradeModal(true); return; }
+          setIsUploading(true);
+          try {
+            let resumeText = '';
+if (isNew && uploadFile) {
+  try {
+    const pdfToText = (await import('react-pdftotext')).default;
+    resumeText = await pdfToText(uploadFile);
+  } catch { resumeText = ''; }
+
+  if (!resumeText || resumeText.trim().length < 10) {
+    toast.error('Could not read this PDF. Please use a text-based PDF, not a scanned image.');
+    setIsUploading(false);
+    return;
+  }
+}
+            const { data } = await api.post('/ai/upload-resume', {
+              title: newResumeTitle.trim(),
+              resumeText,
+              isNewUpload: isNew,
+              useExistingResumeId: !isNew ? selectedExistingResumeId : undefined,
+              ...(uploadJobDescription.trim() ? { jobDescription: uploadJobDescription.trim() } : {}),
+            });
+            const ur = await api.get('/users/data');
+            if (ur.data.user) setUserData(ur.data.user);
+            toast.success(isNew ? 'Resume uploaded successfully!' : 'Resume enhanced successfully!');
+            setNewResumeTitle(''); setUploadFile(null);
+            setUploadJobDescription(''); setUploadSelectedJobRole('');
+            setUploadMode('choose'); setSelectedExistingResumeId('');
+            setShowUploadResumeModal(false);
+            navigate(`/app/builder/${data.resumeId}`);
+          } catch (e: any) {
+            toast.error(e?.response?.data?.message || 'Upload failed. Please try again.');
+          } finally { setIsUploading(false); }
+        }}
+        style={{ width: '100%', padding: '12px', borderRadius: 12, fontSize: 14, fontWeight: 700, background: BRAND, color: SAND, border: 'none', cursor: isUploading ? 'not-allowed' : 'pointer', opacity: isUploading ? 0.6 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+        {isUploading && <i className="fa-solid fa-spinner fa-spin" />}
+        {isUploading ? 'Processing...' : isNew ? 'Upload & Enhance' : 'Enhance Resume'}
+      </button>
+    </>
+  );
+};
+
+const handleEbookOpen = (ebook: Ebook) => {
     if (ebook.isFree || isPaid) { window.open(ebook.pdfUrl, '_blank'); }
     else { setPremiumEbook(ebook); setShowEbookUnlock(true); }
   };
@@ -2328,57 +2580,190 @@ const UserProfile: React.FC = () => {
         </div>
       )}
 
-      {/* Upload Resume Modal */}
-      {showUploadResumeModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 380, padding: 28, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', position: 'relative' }}>
-            <button onClick={() => { setShowUploadResumeModal(false); setNewResumeTitle(''); setUploadFile(null); }}
-              style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: 20, lineHeight: 1 }}>✕</button>
-            <h3 style={{ fontSize: 18, fontWeight: 800, color: BRAND, margin: '0 0 18px' }}>Upload Resume</h3>
-            <input
-              type="text"
-              placeholder="Enter resume title"
-              value={newResumeTitle}
-              onChange={e => setNewResumeTitle(e.target.value)}
-              style={{ width: '100%', padding: '11px 14px', borderRadius: 10, fontSize: 14, border: `1.5px solid ${SAND}`, outline: 'none', marginBottom: 14, boxSizing: 'border-box' }}
+
+{/* Upload Resume Modal */}
+{showUploadResumeModal && (() => {
+  const uploadSlotsUsed = userData?.resumeUploadCount ?? 0;
+  const uploadSlotsTotal = userData?.resumeUploadLimit ?? 0;
+  const uploadSlotsLeft = Math.max(0, uploadSlotsTotal - uploadSlotsUsed);
+  const jdUsed = userData?.jdEnhancementCount ?? 0;
+  const jdTotal = userData?.jdEnhancementLimit ?? 0;
+  const jdLeft = Math.max(0, jdTotal - jdUsed);
+const hasUploadSlot = uploadSlotsLeft > 0;
+const hasJdCredit = jdLeft > 0;
+
+// Auto-load existing resumes when modal opens
+if (existingResumes.length === 0 && !loadingExistingResumes) {
+  loadExistingResumes();
+}
+
+
+
+  // Circular progress component
+  const CircularProgress = ({
+    used, total, color, label, icon
+  }: { used: number; total: number; color: string; label: string; icon: string }) => {
+    const left = Math.max(0, total - used);
+    const pct = total > 0 ? Math.min(1, left / total) : 0;
+    const r = 22;
+    const circ = 2 * Math.PI * r;
+    const dash = pct * circ;
+    const fillColor = left === 0 ? '#ef4444' : color;
+    const trackColor = left === 0 ? '#fecaca' : '#e5e7eb';
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+        <div style={{ position: 'relative', width: 58, height: 58 }}>
+          <svg width="58" height="58" viewBox="0 0 58 58">
+            <circle cx="29" cy="29" r={r} fill="none" stroke={trackColor} strokeWidth="5" />
+            <circle cx="29" cy="29" r={r} fill="none" stroke={fillColor} strokeWidth="5"
+              strokeLinecap="round"
+              strokeDasharray={`${circ}`}
+              strokeDashoffset={circ - dash}
+              style={{ transformOrigin: '29px 29px', transform: 'rotate(-90deg)', transition: 'stroke-dashoffset 0.5s ease' }}
             />
-            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>Select resume file</label>
-            <label htmlFor="upload-resume-input-main" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, border: `2px dashed ${SAND}`, borderRadius: 12, padding: '28px 16px', cursor: 'pointer', marginBottom: 14, background: '#fafafa' }}>
-              {uploadFile
-                ? <p style={{ fontSize: 13, fontWeight: 600, color: BRAND, margin: 0, textAlign: 'center', wordBreak: 'break-all' }}>{uploadFile.name}</p>
-                : <>
-                  <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: 32, color: SAND }} />
-                  <p style={{ fontSize: 13, color: '#9ca3af', margin: 0 }}>Upload resume (PDF only)</p>
-                </>}
-              <input id="upload-resume-input-main" type="file" accept=".pdf" hidden
-                onChange={e => { const f = e.target.files?.[0]; if (f) setUploadFile(f); }} />
-            </label>
-            <button
-              disabled={isUploading}
-              onClick={async () => {
-                if (!newResumeTitle.trim()) { toast.error('Enter a title'); return; }
-                if (!uploadFile) { toast.error('Select a PDF file'); return; }
-                setIsUploading(true);
-                try {
-                  const pdfToText = (await import('react-pdftotext')).default;
-                  const resumeText = await pdfToText(uploadFile);
-                  const { data } = await api.post('/ai/upload-resume', { title: newResumeTitle.trim(), resumeText });
-                  toast.success('Resume uploaded successfully!');
-                  setNewResumeTitle(''); setUploadFile(null); setShowUploadResumeModal(false);
-                  navigate(`/app/builder/${data.resumeId}`);
-                } catch { toast.error('Upload failed. Please try again.'); }
-                finally { setIsUploading(false); }
-              }}
-              style={{ width: '100%', padding: '12px', borderRadius: 12, fontSize: 14, fontWeight: 700, background: BRAND, color: SAND, border: 'none', cursor: isUploading ? 'not-allowed' : 'pointer', opacity: isUploading ? 0.6 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              {isUploading && <i className="fa-solid fa-spinner fa-spin" />}
-              {isUploading ? 'Uploading...' : 'Upload Resume'}
-            </button>
+          </svg>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+           <i className={icon} style={{ fontSize: 11, color: fillColor }} />
+<span style={{ fontSize: total >= 9999 ? 14 : 10, fontWeight: 800, color: fillColor, lineHeight: 1 }}>
+  {total >= 9999 ? '∞' : left}
+</span>
           </div>
         </div>
-      )}
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: left === 0 ? '#ef4444' : '#374151', margin: 0 }}>{label}</p>
+ <p style={{ fontSize: 10, color: '#9ca3af', margin: 0 }}>
+{total >= 9999 ? 'Unlimited' : `${left}/${total} left`}
+</p>
+        </div>
+      </div>
+    );
+  };
 
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+      <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 440, padding: 28, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', position: 'relative', maxHeight: '92vh', overflowY: 'auto' }}>
 
-      {/* Create Cover Letter Modal */}
+        {/* Close button */}
+        <button onClick={() => {
+          setShowUploadResumeModal(false);
+          setNewResumeTitle('');
+          setUploadFile(null);
+          setUploadJobDescription('');
+          setUploadSelectedJobRole('');
+          setUploadDropdownOpen(false);
+          setUploadMode('choose');
+          setSelectedExistingResumeId('');
+        }}
+          style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: 20, lineHeight: 1 }}>✕
+        </button>
+
+        <h3 style={{ fontSize: 18, fontWeight: 800, color: BRAND, margin: '0 0 18px' }}>Upload Resume</h3>
+
+        {/* Circular credit indicators */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 32, marginBottom: 20, padding: '14px 16px', background: '#f9fafb', borderRadius: 14, border: '1px solid #f0f0f0' }}>
+          <CircularProgress
+            used={uploadSlotsUsed} total={uploadSlotsTotal}
+            color={BRAND} label="Uploads" icon="fa-solid fa-cloud-arrow-up"
+          />
+          <div style={{ width: 1, background: '#e5e7eb' }} />
+          <CircularProgress
+            used={jdUsed} total={jdTotal}
+            color="#10b981" label="JD Credits" icon="fa-solid fa-bolt"
+          />
+        </div>
+
+        {/* All credits gone */}
+        {!hasUploadSlot && !hasJdCredit ? (
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <div style={{ width: 52, height: 52, borderRadius: '50%', background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+              <i className="fa-solid fa-lock" style={{ fontSize: 22, color: '#ef4444' }} />
+            </div>
+            <h4 style={{ fontSize: 15, fontWeight: 800, color: BRAND, margin: '0 0 8px' }}>All Credits Used</h4>
+            <p style={{ fontSize: 13, color: '#6b7280', margin: '0 0 20px', lineHeight: 1.6 }}>
+              You've used all your upload slots and JD credits. Upgrade to continue.
+            </p>
+            <button onClick={() => { setShowUploadResumeModal(false); setShowPricingModal(true); }}
+              style={{ padding: '11px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, background: BRAND, color: SAND, border: 'none', cursor: 'pointer' }}>
+              <i className="fa-solid fa-crown" style={{ marginRight: 6 }} />Upgrade Plan
+            </button>
+          </div>
+
+        /* No upload slots but has JD credits — go straight to existing picker */
+        ) : !hasUploadSlot && hasJdCredit ? (
+          <>
+            <div style={{ marginBottom: 14, padding: '12px 14px', background: '#fef3c7', border: '1px solid #f59e0b', borderRadius: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <i className="fa-solid fa-circle-info" style={{ color: '#d97706', fontSize: 14, flexShrink: 0 }} />
+                <p style={{ fontSize: 12, color: '#92400e', margin: 0, lineHeight: 1.5 }}>
+                  <strong>Upload slots used up.</strong> Select an existing resume to enhance with a new job description.
+                </p>
+              </div>
+            </div>
+            {renderExistingResumePicker()}
+            {renderBottomForm(false)}
+          </>
+
+        /* Has upload slots + existing resumes → show choose screen */
+        ) : uploadMode === 'choose' && allResumes.length > 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <p style={{ fontSize: 13, color: '#6b7280', margin: '0 0 4px' }}>How would you like to proceed?</p>
+
+            <button onClick={() => setUploadMode('new')}
+              style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 18px', borderRadius: 14, background: BRAND, color: SAND, border: 'none', cursor: 'pointer', textAlign: 'left' }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(237,201,175,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: 18, color: SAND }} />
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, margin: 0, color: SAND }}>Upload New Resume</p>
+                <p style={{ fontSize: 11, margin: '2px 0 0', color: `${SAND}bb` }}>Uses 1 upload slot — {uploadSlotsLeft} left</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                setUploadMode('existing');
+                if (existingResumes.length === 0) loadExistingResumes();
+              }}
+              style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 18px', borderRadius: 14, background: SAND_LIGHT, color: BRAND, border: `1.5px solid ${SAND}`, cursor: 'pointer', textAlign: 'left' }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: SAND, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <i className="fa-solid fa-rotate" style={{ fontSize: 18, color: BRAND }} />
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, margin: 0, color: BRAND }}>Continue with Existing Resume</p>
+                <p style={{ fontSize: 11, margin: '2px 0 0', color: '#6b7280' }}>Re-use an uploaded resume — no slot used</p>
+              </div>
+            </button>
+          </div>
+
+        /* Existing resume flow */
+        ) : uploadMode === 'existing' ? (
+          <>
+            <button onClick={() => { setUploadMode('choose'); setSelectedExistingResumeId(''); }}
+              style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: BRAND, background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 14px', fontWeight: 600 }}>
+              <i className="fa-solid fa-chevron-left" style={{ fontSize: 10 }} /> Back
+            </button>
+            {renderExistingResumePicker()}
+            {renderBottomForm(false)}
+          </>
+
+        /* New upload flow (mode=new OR no existing resumes yet) */
+        ) : (
+          <>
+            {uploadMode === 'new' && (
+              <button onClick={() => { setUploadMode('choose'); setUploadFile(null); }}
+                style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: BRAND, background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 14px', fontWeight: 600 }}>
+                <i className="fa-solid fa-chevron-left" style={{ fontSize: 10 }} /> Back
+              </button>
+            )}
+            {renderBottomForm(true)}
+          </>
+        )}
+
+      </div>
+    </div>
+  );
+})()}
+          {/* Create Cover Letter Modal */}
       {showCreateCoverLetterModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 380, padding: 28, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', position: 'relative' }}>
@@ -2492,6 +2877,66 @@ const UserProfile: React.FC = () => {
           </div>
         </div>
       )}
+
+{/* JD Upgrade Modal */}
+{showJdUpgradeModal && (
+  <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+    <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 400, padding: 28, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', position: 'relative' }}>
+      <button onClick={() => setShowJdUpgradeModal(false)}
+        style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: 20, lineHeight: 1 }}>✕</button>
+
+      {/* Icon */}
+      <div style={{ width: 56, height: 56, borderRadius: 16, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+        <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 22, color: SAND }} />
+      </div>
+
+      {/* Title */}
+      <h3 style={{ fontSize: 18, fontWeight: 800, color: BRAND, textAlign: 'center', margin: '0 0 8px' }}>JD Enhancement Limit Reached</h3>
+      <p style={{ fontSize: 13, color: '#6b7280', textAlign: 'center', margin: '0 0 20px', lineHeight: 1.6 }}>
+        You've used your free JD enhancement credit. Upgrade your plan to tailor unlimited resumes to job descriptions.
+      </p>
+
+      {/* Benefits */}
+      <div style={{ background: SAND_LIGHT, borderRadius: 12, padding: '14px 16px', marginBottom: 20 }}>
+        {[
+          { icon: 'fa-solid fa-bolt', text: 'Unlimited JD enhancements' },
+          { icon: 'fa-solid fa-key', text: 'AI keyword optimization' },
+          { icon: 'fa-solid fa-chart-bar', text: 'Higher ATS score matching' },
+          { icon: 'fa-solid fa-file-lines', text: 'Smart resume tailoring' },
+        ].map((b, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: i < 3 ? 10 : 0 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <i className={b.icon} style={{ fontSize: 12, color: SAND }} />
+            </div>
+            <p style={{ fontSize: 12, fontWeight: 600, color: BRAND, margin: 0 }}>{b.text}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Buttons */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+        <button onClick={() => { setShowJdUpgradeModal(false); setShowUploadResumeModal(false); setShowPricingModal(true); }}
+          style={{ width: '100%', padding: '12px', borderRadius: 12, fontSize: 13, fontWeight: 700, background: BRAND, color: SAND, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
+          <i className="fa-solid fa-crown" style={{ fontSize: 12 }} /> Upgrade to Unlock
+        </button>
+     <button onClick={() => {
+  setShowJdUpgradeModal(false);
+  setShowUploadResumeModal(false);
+  if (selectedExistingResumeId) {
+    navigate(`/app/builder/${selectedExistingResumeId}`);
+  } else if (allResumes.length > 0) {
+    navigate(`/app/builder/${allResumes[0]._id}`);
+  }
+}}
+  style={{ width: '100%', padding: '12px', borderRadius: 12, fontSize: 13, fontWeight: 600, background: '#f3f4f6', color: '#374151', border: 'none', cursor: 'pointer' }}>
+  Continue Editing Resume
+</button>
+      </div>
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 };

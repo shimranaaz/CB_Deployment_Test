@@ -64,8 +64,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
   accentColor,
   classes = "",
 }) => {
-  // Default to 'digital-pro' if template is empty or invalid
-  const activeTemplate = template && template.trim() !== '' ? template : 'digital-pro';
+const activeTemplate = template && template.trim() !== '' ? template : 'geometric-blue';
   
   // Pass data directly - templates handle undefined checks internally
  const safeData: ResumeData = {
@@ -78,7 +77,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
     skills: data.skills || [],
     additional_info: data.additional_info || {},
     template: data.template || activeTemplate,
-    accent_color: data.accent_color || accentColor || '#3B82F6',
+    accent_color: data.accent_color || accentColor || '#2c2a63',
   };
 
   const renderTemplate = () => {
@@ -184,7 +183,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
       case "classic":
         return <ClassicTemplate data={safeData} accentColor={accentColor} />;
       default:
-        return <DigitalProTemplate data={safeData} accentColor={accentColor} />;
+  return <GeometricBlueTemplate data={safeData} accentColor={accentColor} />;
     }
   };
 

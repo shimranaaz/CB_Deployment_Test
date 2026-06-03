@@ -79,8 +79,8 @@ const ResumeSchema: Schema<IResume> = new Schema(
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     title: { type: String, default: "Untitled Resume" },
     public: { type: Boolean, default: false },
-    template: { type: String, default: "digital-pro" },
-    accent_color: { type: String, default: "#3B82F6" },
+   template: { type: String, default: "geometric-blue" },
+    accent_color: { type: String, default: "#2c2a63" },
     professional_summary: { type: String, default: "" },
     skills: [{ type: String }],
     personal_info: {
